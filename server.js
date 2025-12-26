@@ -36,7 +36,7 @@ app.post("/api/data", (req, res) => {
 
     const { bpm, spo2, led, device_uid } = req.body;
 
-    // Konvertujeme hodnoty na čísla, aby server prijímal aj stringy
+    // Konvertujeme hodnoty na čísla
     const bpmNum = Number(bpm);
     const spo2Num = Number(spo2);
     const ledNum = Number(led);
