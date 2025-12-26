@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<title>Oxymeter Dashboard</title>
+</head>
+<body>
+<h1>Oxymeter Dashboard</h1>
+
+<div id="auth">
+  <h2>Registrácia</h2>
+  <input type="email" id="regEmail" placeholder="Email"><br>
+  <input type="password" id="regPass" placeholder="Heslo"><br>
+  <button id="registerBtn">Registrovať</button>
+
+  <h2>Prihlásenie</h2>
+  <input type="email" id="loginEmail" placeholder="Email"><br>
+  <input type="password" id="loginPass" placeholder="Heslo"><br>
+  <button id="loginBtn">Prihlásiť</button>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <h2>Váš účet</h2>
+  <p>Prihlásený ako: <span id="userEmail"></span></p>
+  <button id="loadDataBtn">Načítať merania</button>
+  <pre id="output"></pre>
+</div>
+
+<script>
+let token = null;
+let userEmail = '';
+
+const registerBtn = document.getElementById("registerBtn");
+const loginBtn = document.getElementById("loginBtn");
+const loadDataBtn = document.getElementById("loadDataBtn");
+const output = document.getElementById("output");
+const dashboard = document.getElementById("dashboard");
+const authDiv = document.getElementById("auth");
+const userEmailSpan = document.getElementById("userEmail");
+
+// Registrácia
+registerBtn.addEventListener("click", async () => {
+  const email = document.getElementById("regEmail").value;
+  const password = document.getElementById("regPass").value;
+
+  const resp = await fetch("https://oxymeter-server.onrender.com/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (resp.ok) {
+    alert("Registrácia úspešná!");
+  } else {
+    alert("Chyba pri registrácii");
+  }
+});
+
+// Prihlásenie
+loginBtn.addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPass").value;
+
+  const resp = await fetch("https://oxymeter-server.onrender.com/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (!resp.ok) {
+    alert("Chyba pri prihlásení");
+    return;
+  }
+
+  const data = await resp.json();
+  token = data.token;
+  userEmail = email;
+
+  userEmailSpan.textContent = userEmail;
+  authDiv.style.display = "none";
+  dashboard.style.display = "block";
+});
+
+// Načítanie dát
+loadDataBtn.addEventListener("click", async () => {
+  if (!token) return alert("Nie ste prihlásený");
+
+  const resp = await fetch("https://oxymeter-server.onrender.com/api/my-data", {
+    headers: { "Authorization": "Bearer " + token }
+  });
+
+  if (!resp.ok) {
+    output.textContent = "Chyba pri získavaní dát";
+    return;
+  }
+
+  const data = await resp.json();
+  output.textContent = JSON.stringify(data, null, 2);
+});
+</script>
+</body>
+</html>
