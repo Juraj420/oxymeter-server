@@ -28,7 +28,6 @@ db.connect(err => {
     console.log("MySQL connected");
 });
 
-
 // ===================================================
 // 🔴 ESP → POSIELANIE DÁT
 // ===================================================
@@ -37,12 +36,12 @@ app.post("/api/data", (req, res) => {
 
     const { bpm, spo2, led, device_uid } = req.body;
 
-    if (
-        typeof bpm !== "number" ||
-        typeof spo2 !== "number" ||
-        typeof led !== "number" ||
-        !device_uid
-    ) {
+    // Konvertujeme hodnoty na čísla, aby server prijímal aj stringy
+    const bpmNum = Number(bpm);
+    const spo2Num = Number(spo2);
+    const ledNum = Number(led);
+
+    if (isNaN(bpmNum) || isNaN(spo2Num) || isNaN(ledNum) || !device_uid) {
         return res.status(400).send("Invalid data");
     }
 
@@ -57,7 +56,7 @@ app.post("/api/data", (req, res) => {
 
             db.query(
                 "INSERT INTO measurements (bpm, spo2, led, device_id) VALUES (?, ?, ?, ?)",
-                [bpm, spo2, led, deviceId],
+                [bpmNum, spo2Num, ledNum, deviceId],
                 err => {
                     if (err) {
                         console.error("DB insert error:", err);
@@ -70,17 +69,13 @@ app.post("/api/data", (req, res) => {
     );
 });
 
-
 // ===================================================
 // 🔐 REGISTRÁCIA
 // ===================================================
-
-// GET endpoint pre prehliadač (aby nebolo Cannot GET)
 app.get("/api/register", (req, res) => {
     res.send("Použi POST /api/register s emailom a heslom");
 });
 
-// POST registrácia
 app.post("/api/register", async (req, res) => {
     const { email, password } = req.body;
 
@@ -98,7 +93,6 @@ app.post("/api/register", async (req, res) => {
         }
     );
 });
-
 
 // ===================================================
 // 🔐 PRIHLÁSENIE
@@ -123,7 +117,6 @@ app.post("/api/login", (req, res) => {
         }
     );
 });
-
 
 // ===================================================
 // 🔗 PRIRADENIE ZARIADENIA K USEROVI
@@ -150,7 +143,6 @@ app.post("/api/assign-device", (req, res) => {
         }
     );
 });
-
 
 // ===================================================
 // 📊 DÁTA PRE PRIHLÁSENÉHO USERA
@@ -180,7 +172,6 @@ app.get("/api/my-data", (req, res) => {
         res.json(results);
     });
 });
-
 
 // ===================================================
 const PORT = process.env.PORT || 10000;
