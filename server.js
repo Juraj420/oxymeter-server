@@ -93,7 +93,8 @@ app.post("/api/reset-password", (req, res) => {
       err2 => {
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní tokenu" });
 
-        const resetLink = `https://tvoja-stranka.sk/reset-password-form.html?token=${token}`;
+       const resetLink = `https://oxymeter-server.onrender.com/reset-password-form.html?token=${token}`;
+
 
         mail.sendMail(
           {
