@@ -67,3 +67,18 @@ document.getElementById("loadDataBtn").onclick = async () => {
     output.appendChild(div);
   });
 };
+
+/* 🔥 RESET HESLA – pridané */
+document.getElementById("resetBtn").onclick = async () => {
+  const email = loginEmail.value;
+  if (!email) return alert("Zadaj email, ktorý chceš obnoviť");
+
+  const r = await fetch(API + "/api/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+
+  const text = await r.text();
+  alert(text);
+};
