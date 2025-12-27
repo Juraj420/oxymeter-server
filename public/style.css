@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
   background: #121212;
   color: #fff;
@@ -58,3 +59,65 @@ button:hover {
   opacity: 0.7;
   text-align: right;
 }
+=======
+body {
+  background: #121212;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+input {
+  background: #1f1f1f;
+  color: white;
+}
+
+button {
+  background: #00c853;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.measurement {
+  background: #1f1f1f;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.values b {
+  font-size: 18px;
+}
+
+.time {
+  font-size: 11px;
+  opacity: 0.7;
+  text-align: right;
+}
+>>>>>>> fc96bb42f7cb9a1764aebc6dccd6b5853623bfb7
