@@ -6,6 +6,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 const app = express();
 const JWT_SECRET = "tajne_heslo_pre_token";
@@ -16,9 +17,8 @@ const mail = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "gavlakjuraj27@gmail.com",
+    user: "9edf2f001@smtp-brevo.com",  // Brevo SMTP login
     pass: process.env.SMTP_PASS
-
   }
 });
 
@@ -105,35 +105,74 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-// Reset hesla
+// ✅ Reset hesla cez token
 app.post("/api/reset-password", (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).send("Chýba email");
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
+  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
     if (err) return res.status(500).send("DB error");
     if (results.length === 0) return res.status(404).send("Tento email nie je registrovaný");
 
-    const newPass = Math.random().toString(36).slice(-8);
-    const hash = await bcrypt.hash(newPass, 10);
+    const user = results[0];
 
-    db.query("UPDATE users SET password = ? WHERE email = ?", [hash, email], err2 => {
-      if (err2) return res.status(500).send("Chyba pri ukladaní hesla");
+    // Generovanie tokenu (platný 1 hodinu)
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = Date.now() + 3600 * 1000; // 1 hodina
 
-      mail.sendMail(
-        {
-          from: "Oxymeter <noreply@oxymeter.app>",
-          to: email,
-          subject: "Obnova hesla - Oxymeter",
-          text: `Tvoje nové heslo je: ${newPass}`
-        },
-        err3 => {
-          if (err3) return res.status(500).send("Chyba pri odosielaní emailu");
-          res.send("Nové heslo bolo odoslané na tvoj email.");
+    db.query(
+      "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
+      [token, new Date(expires), user.id],
+      err2 => {
+        if (err2) return res.status(500).send("Chyba pri ukladaní tokenu");
+
+        const resetLink = `https://tvoja-stranka.sk/reset-password-form.html?token=${token}`;
+
+        mail.sendMail(
+          {
+            from: "Oxymeter <noreply@oxymeter.app>",
+            to: email,
+            subject: "Obnova hesla - Oxymeter",
+            text: `Klikni na tento link pre nastavenie nového hesla: ${resetLink}`
+          },
+          err3 => {
+            if (err3) {
+              console.log("SMTP error:", err3);
+              return res.status(500).send("Chyba pri odosielaní emailu");
+            }
+            res.send("Link na reset hesla bol odoslaný na tvoj email.");
+          }
+        );
+      }
+    );
+  });
+});
+
+// Endpoint pre nastavenie nového hesla
+app.post("/api/set-new-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+  if (!token || !newPassword) return res.status(400).send("Chýba token alebo heslo");
+
+  db.query(
+    "SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > NOW()",
+    [token],
+    async (err, results) => {
+      if (err) return res.status(500).send("DB error");
+      if (results.length === 0) return res.status(400).send("Neplatný alebo expirovaný token");
+
+      const user = results[0];
+      const hash = await bcrypt.hash(newPassword, 10);
+
+      db.query(
+        "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?",
+        [hash, user.id],
+        err2 => {
+          if (err2) return res.status(500).send("Chyba pri ukladaní hesla");
+          res.send("Heslo bolo úspešne zmenené.");
         }
       );
-    });
-  });
+    }
+  );
 });
 
 // Priradenie zariadenia
