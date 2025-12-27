@@ -10,7 +10,6 @@ const userEmailSpan = document.getElementById("userEmail");
 document.getElementById("registerBtn").onclick = async () => {
   const email = regEmail.value.trim();
   const password = regPass.value.trim();
-
   if (!email || !password) return alert("Vyplň všetky polia");
 
   try {
@@ -19,9 +18,7 @@ document.getElementById("registerBtn").onclick = async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
-
     alert(res.ok ? "Registrácia OK" : "Chyba registrácie");
-
   } catch (err) {
     console.error(err);
     alert("Chyba pri registrácii");
@@ -32,7 +29,6 @@ document.getElementById("registerBtn").onclick = async () => {
 document.getElementById("loginBtn").onclick = async () => {
   const email = loginEmail.value.trim();
   const password = loginPass.value.trim();
-
   if (!email || !password) return alert("Vyplň všetky polia");
 
   try {
@@ -50,7 +46,6 @@ document.getElementById("loginBtn").onclick = async () => {
     userEmailSpan.textContent = email;
     authDiv.style.display = "none";
     dashboard.style.display = "block";
-
   } catch (err) {
     console.error(err);
     alert("Chyba pri prihlasovaní");
@@ -60,20 +55,16 @@ document.getElementById("loginBtn").onclick = async () => {
 // ✅ Načítanie dát používateľa
 document.getElementById("loadDataBtn").onclick = async () => {
   output.innerHTML = "";
-
   try {
     const res = await fetch(`${API}/api/my-data`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-
     if (!res.ok) return alert("Chyba pri načítaní dát");
 
     const data = await res.json();
-
     data.forEach(m => {
       const div = document.createElement("div");
       div.className = "measurement";
-
       div.innerHTML = `
         <div class="values">
           ❤️ <b>${m.bpm}</b> BPM<br>
@@ -86,14 +77,13 @@ document.getElementById("loadDataBtn").onclick = async () => {
       `;
       output.appendChild(div);
     });
-
   } catch (err) {
     console.error(err);
     alert("Chyba pri načítaní dát");
   }
 };
 
-// 🔥 RESET HESLA – prompt pre email
+// 🔥 RESET HESLA – automatické otvorenie reset formulára
 document.getElementById("resetBtn").onclick = async () => {
   const email = prompt("Zadaj svoj email pre reset hesla:");
   if (!email) return;
@@ -105,9 +95,13 @@ document.getElementById("resetBtn").onclick = async () => {
       body: JSON.stringify({ email: email.trim() })
     });
 
-    const text = await res.text();
-    alert(text);
-
+    const data = await res.json();
+    if (data.success && data.link) {
+      alert("Link na reset hesla bol odoslaný a otvorí sa formulár.");
+      window.location.href = data.link;
+    } else {
+      alert("Nepodarilo sa vygenerovať reset link.");
+    }
   } catch (err) {
     console.error(err);
     alert("Chyba pri žiadosti o reset hesla");
