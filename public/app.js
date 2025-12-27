@@ -6,7 +6,9 @@ const dashboard = document.getElementById("dashboard");
 const output = document.getElementById("output");
 const userEmailSpan = document.getElementById("userEmail");
 
-// ✅ Registrácia
+// =======================
+// Registrácia
+// =======================
 document.getElementById("registerBtn").onclick = async () => {
   const email = regEmail.value.trim();
   const password = regPass.value.trim();
@@ -18,14 +20,18 @@ document.getElementById("registerBtn").onclick = async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
+
     alert(res.ok ? "Registrácia OK" : "Chyba registrácie");
+
   } catch (err) {
-    console.error(err);
+    console.error("Chyba pri registrácii:", err);
     alert("Chyba pri registrácii");
   }
 };
 
-// ✅ Prihlásenie
+// =======================
+// Prihlásenie
+// =======================
 document.getElementById("loginBtn").onclick = async () => {
   const email = loginEmail.value.trim();
   const password = loginPass.value.trim();
@@ -46,19 +52,24 @@ document.getElementById("loginBtn").onclick = async () => {
     userEmailSpan.textContent = email;
     authDiv.style.display = "none";
     dashboard.style.display = "block";
+
   } catch (err) {
-    console.error(err);
+    console.error("Chyba pri prihlasovaní:", err);
     alert("Chyba pri prihlasovaní");
   }
 };
 
-// ✅ Načítanie dát používateľa
+// =======================
+// Načítanie dát používateľa
+// =======================
 document.getElementById("loadDataBtn").onclick = async () => {
   output.innerHTML = "";
+
   try {
     const res = await fetch(`${API}/api/my-data`, {
       headers: { Authorization: `Bearer ${token}` }
     });
+
     if (!res.ok) return alert("Chyba pri načítaní dát");
 
     const data = await res.json();
@@ -77,13 +88,16 @@ document.getElementById("loadDataBtn").onclick = async () => {
       `;
       output.appendChild(div);
     });
+
   } catch (err) {
-    console.error(err);
+    console.error("Chyba pri načítaní dát:", err);
     alert("Chyba pri načítaní dát");
   }
 };
 
-// 🔥 RESET HESLA – automatické otvorenie reset formulára
+// =======================
+// Reset hesla
+// =======================
 document.getElementById("resetBtn").onclick = async () => {
   const email = prompt("Zadaj svoj email pre reset hesla:");
   if (!email) return;
@@ -95,15 +109,20 @@ document.getElementById("resetBtn").onclick = async () => {
       body: JSON.stringify({ email: email.trim() })
     });
 
+    // očakávame JSON { success: true, link: "..." } z API
     const data = await res.json();
+
     if (data.success && data.link) {
       alert("Link na reset hesla bol odoslaný a otvorí sa formulár.");
-      window.location.href = data.link;
+      window.location.href = data.link; // presmerovanie na reset-password-form.html
+    } else if (data.message) {
+      alert(data.message);
     } else {
       alert("Nepodarilo sa vygenerovať reset link.");
     }
+
   } catch (err) {
-    console.error(err);
+    console.error("Chyba pri žiadosti o reset hesla:", err);
     alert("Chyba pri žiadosti o reset hesla");
   }
 };
