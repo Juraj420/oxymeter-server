@@ -6,44 +6,45 @@ const dashboard = document.getElementById("dashboard");
 const output = document.getElementById("output");
 const userEmailSpan = document.getElementById("userEmail");
 
-// Registrácia
+// ✅ Registrácia
 document.getElementById("registerBtn").onclick = async () => {
-  const email = regEmail.value;
-  const password = regPass.value;
+  const email = regEmail.value.trim();
+  const password = regPass.value.trim();
 
   if (!email || !password) return alert("Vyplň všetky polia");
 
   try {
-    const r = await fetch(API + "/api/register", {
+    const res = await fetch(`${API}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
 
-    alert(r.ok ? "Registrácia OK" : "Chyba registrácie");
+    alert(res.ok ? "Registrácia OK" : "Chyba registrácie");
+
   } catch (err) {
     console.error(err);
     alert("Chyba pri registrácii");
   }
 };
 
-// Prihlásenie
+// ✅ Prihlásenie
 document.getElementById("loginBtn").onclick = async () => {
-  const email = loginEmail.value;
-  const password = loginPass.value;
+  const email = loginEmail.value.trim();
+  const password = loginPass.value.trim();
 
   if (!email || !password) return alert("Vyplň všetky polia");
 
   try {
-    const r = await fetch(API + "/api/login", {
+    const res = await fetch(`${API}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
 
-    if (!r.ok) return alert("Zlé údaje");
+    if (!res.ok) return alert("Zlé údaje");
 
-    const data = await r.json();
+    const data = await res.json();
     token = data.token;
 
     userEmailSpan.textContent = email;
@@ -56,18 +57,18 @@ document.getElementById("loginBtn").onclick = async () => {
   }
 };
 
-// Načítanie dát používateľa
+// ✅ Načítanie dát používateľa
 document.getElementById("loadDataBtn").onclick = async () => {
   output.innerHTML = "";
 
   try {
-    const r = await fetch(API + "/api/my-data", {
-      headers: { Authorization: "Bearer " + token }
+    const res = await fetch(`${API}/api/my-data`, {
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!r.ok) return alert("Chyba pri načítaní dát");
+    if (!res.ok) return alert("Chyba pri načítaní dát");
 
-    const data = await r.json();
+    const data = await res.json();
 
     data.forEach(m => {
       const div = document.createElement("div");
@@ -83,7 +84,6 @@ document.getElementById("loadDataBtn").onclick = async () => {
           ⏱ ${new Date(m.created_at).toLocaleString("sk-SK")}
         </div>
       `;
-
       output.appendChild(div);
     });
 
@@ -93,20 +93,19 @@ document.getElementById("loadDataBtn").onclick = async () => {
   }
 };
 
-/* 🔥 RESET HESLA – pridané */
+// 🔥 RESET HESLA – prompt pre email
 document.getElementById("resetBtn").onclick = async () => {
-  // Používateľ zadá email cez prompt
   const email = prompt("Zadaj svoj email pre reset hesla:");
   if (!email) return;
 
   try {
-    const r = await fetch(API + "/api/reset-password", {
+    const res = await fetch(`${API}/api/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email: email.trim() })
     });
 
-    const text = await r.text();
+    const text = await res.text();
     alert(text);
 
   } catch (err) {
