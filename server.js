@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const JWT_SECRET = "tajne_heslo_pre_token";
 
+app.use(express.static("public"));
+
 // --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
