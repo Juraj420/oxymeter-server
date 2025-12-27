@@ -15,7 +15,7 @@ const mail = nodemailer.createTransport({
   secure: false,
   auth: {
     user: "9edf2f001@smtp-brevo.com",
-    pass: "PcaYNTVE4IGUDLb1"
+    pass: "xsmtpsib-6bbfede90e53e6981f88af0b507ef2a368ac35de6ab1c5ce947dbbeb35978848-bT1sPt4b8M2l3zZH"
   }
 });
 
