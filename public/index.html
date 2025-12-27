@@ -1,115 +1,21 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oxymeter Dashboard</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #fff;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
-  background: #111;
-  width: 100%;
-  max-width: 420px;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-h2 {
-  margin-top: 20px;
-  font-size: 18px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 8px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background: #00c6ff;
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-.divider {
-  height: 1px;
-  background: #333;
-  margin: 20px 0;
-}
-
-#dashboard {
-  display: none;
-}
-
-.card {
-  background: #1c1c1c;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-}
-
-pre {
-  background: #000;
-  padding: 10px;
-  border-radius: 8px;
-  max-height: 250px;
-  overflow-y: auto;
-  font-size: 12px;
-}
-
-.small {
-  font-size: 13px;
-  opacity: 0.8;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Oxymeter Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
+
   <h1>🫀 Oxymeter</h1>
 
-  <!-- AUTH -->
   <div id="auth">
     <h2>Registrácia</h2>
     <input type="email" id="regEmail" placeholder="Email">
     <input type="password" id="regPass" placeholder="Heslo">
     <button id="registerBtn">Registrovať</button>
-
-    <div class="divider"></div>
 
     <h2>Prihlásenie</h2>
     <input type="email" id="loginEmail" placeholder="Email">
@@ -117,82 +23,14 @@ pre {
     <button id="loginBtn">Prihlásiť</button>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard">
-    <h2>Váš účet</h2>
-    <p class="small">Prihlásený ako: <b><span id="userEmail"></span></b></p>
-
-    <div class="card">
-      <button id="loadDataBtn">📊 Načítať merania</button>
-      <pre id="output">Žiadne dáta</pre>
-    </div>
+  <div id="dashboard" style="display:none;">
+    <p>Prihlásený ako: <b id="userEmail"></b></p>
+    <button id="loadDataBtn">Načítať merania</button>
+    <div id="output"></div>
   </div>
+
 </div>
 
-<script>
-let token = null;
-
-const registerBtn = document.getElementById("registerBtn");
-const loginBtn = document.getElementById("loginBtn");
-const loadDataBtn = document.getElementById("loadDataBtn");
-const output = document.getElementById("output");
-const dashboard = document.getElementById("dashboard");
-const authDiv = document.getElementById("auth");
-const userEmailSpan = document.getElementById("userEmail");
-
-// REGISTRÁCIA
-registerBtn.addEventListener("click", async () => {
-  const email = regEmail.value;
-  const password = regPass.value;
-
-  const resp = await fetch("https://oxymeter-server.onrender.com/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
-
-  alert(resp.ok ? "Registrácia úspešná!" : "Registrácia zlyhala");
-});
-
-// PRIHLÁSENIE
-loginBtn.addEventListener("click", async () => {
-  const email = loginEmail.value;
-  const password = loginPass.value;
-
-  const resp = await fetch("https://oxymeter-server.onrender.com/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
-
-  if (!resp.ok) {
-    alert("Zlé prihlasovacie údaje");
-    return;
-  }
-
-  const data = await resp.json();
-  token = data.token;
-
-  userEmailSpan.textContent = email;
-  authDiv.style.display = "none";
-  dashboard.style.display = "block";
-});
-
-// NAČÍTANIE DÁT
-loadDataBtn.addEventListener("click", async () => {
-  const resp = await fetch("https://oxymeter-server.onrender.com/api/my-data", {
-    headers: { "Authorization": "Bearer " + token }
-  });
-
-  if (!resp.ok) {
-    output.textContent = "Chyba pri získavaní dát";
-    return;
-  }
-
-  const data = await resp.json();
-  output.textContent = JSON.stringify(data, null, 2);
-});
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
