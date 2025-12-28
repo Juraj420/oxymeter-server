@@ -23,7 +23,7 @@ document.getElementById("registerBtn").onclick = async () => {
 
     if (!res.ok) {
       const text = await res.text();
-      return alert(text); // zobrazí text, ktorý server posiela
+      return alert(text); 
     }
 
     alert("Registrácia úspešná. Teraz sa môžeš prihlásiť.");
@@ -123,12 +123,11 @@ document.getElementById("resetBtn").onclick = async () => {
 
     const data = await res.json();
 
-    // Debug: pozri, čo server posiela
-    console.log("Reset response:", data);
+    console.log("Reset response:", data); // debug
 
     if (data.success && data.link) {
-      alert("Link na reset hesla bol odoslaný. Teraz sa otvorí formulár.");
-      window.location.href = data.link;
+      alert("Link na reset hesla bol odoslaný. Otvorí sa formulár v novej záložke.");
+      window.open(data.link, "_blank"); // ✅ toto otvorí stránku formulára
     } else {
       alert("Nepodarilo sa vygenerovať reset link.");
     }
