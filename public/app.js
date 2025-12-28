@@ -20,8 +20,13 @@ document.getElementById("registerBtn").onclick = async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
-    const data = await res.json();
-    alert(data.message);
+
+    if (!res.ok) {
+      const text = await res.text();
+      return alert(text); // zobrazí text, ktorý server posiela
+    }
+
+    alert("Registrácia úspešná. Teraz sa môžeš prihlásiť.");
   } catch (err) {
     console.error("Chyba pri registrácii:", err);
     alert("Chyba pri registrácii");
@@ -42,10 +47,15 @@ document.getElementById("loginBtn").onclick = async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
-    const data = await res.json();
-    if (!data.success) return alert(data.message);
 
+    if (!res.ok) {
+      const text = await res.text();
+      return alert(text);
+    }
+
+    const data = await res.json();
     token = data.token;
+
     userEmailSpan.textContent = email;
     authDiv.style.display = "none";
     dashboard.style.display = "block";
@@ -64,7 +74,11 @@ document.getElementById("loadDataBtn").onclick = async () => {
     const res = await fetch(`${API}/api/my-data`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) return alert("Chyba pri načítaní dát");
+
+    if (!res.ok) {
+      const text = await res.text();
+      return alert(text);
+    }
 
     const data = await res.json();
     data.forEach(m => {
@@ -102,15 +116,23 @@ document.getElementById("resetBtn").onclick = async () => {
       body: JSON.stringify({ email: email.trim() })
     });
 
+    if (!res.ok) {
+      const text = await res.text();
+      return alert(text);
+    }
+
     const data = await res.json();
+
+    // Debug: pozri, čo server posiela
+    console.log("Reset response:", data);
+
     if (data.success && data.link) {
-      alert("Link na reset hesla bol odoslaný a otvorí sa formulár.");
+      alert("Link na reset hesla bol odoslaný. Teraz sa otvorí formulár.");
       window.location.href = data.link;
-    } else if (data.message) {
-      alert(data.message);
     } else {
       alert("Nepodarilo sa vygenerovať reset link.");
     }
+
   } catch (err) {
     console.error("Chyba pri žiadosti o reset hesla:", err);
     alert("Chyba pri žiadosti o reset hesla");
