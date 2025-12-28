@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const mysql = require("mysql2");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const axios = require("axios");
