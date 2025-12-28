@@ -62,7 +62,7 @@ app.post("/api/login", (req, res) => {
 });
 
 // =======================
-// Reset hesla – vygenerovanie tokenu cez Brevo API
+// Reset hesla – Brevo API
 // =======================
 app.post("/api/reset-password", async (req, res) => {
   const { email } = req.body;
@@ -84,7 +84,6 @@ app.post("/api/reset-password", async (req, res) => {
 
         const resetLink = `https://oxymeter-server.onrender.com/reset-password-form.html?token=${token}`;
 
-        // Odoslanie emailu cez Brevo API
         try {
           await axios.post("https://api.brevo.com/v3/smtp/email", {
             sender: { name: "Oxymeter", email: "noreply@oxymeter.app" },
@@ -166,7 +165,7 @@ app.get("/api/my-data", (req, res) => {
 });
 
 // =======================
-// Priradenie zariadenia
+// Priradenie zariadenia k účtu
 // =======================
 app.post("/api/assign-device", (req, res) => {
   const { device_uid } = req.body;
@@ -183,6 +182,36 @@ app.post("/api/assign-device", (req, res) => {
   db.query("UPDATE devices SET user_id = ? WHERE device_uid = ?", [decoded.id, device_uid], err => {
     if (err) return res.status(500).json({ success: false, message: "Error" });
     res.json({ success: true, message: "Device assigned" });
+  });
+});
+
+// =======================
+// Prijímanie dát z ESP
+// =======================
+app.post("/api/send-data", (req, res) => {
+  const { bpm, spo2, led, device_uid } = req.body;
+
+  if (!bpm || !spo2 || !device_uid) {
+    return res.status(400).json({ success: false, message: "Chýbajú údaje" });
+  }
+
+  // Zisti používateľa podľa zariadenia
+  db.query("SELECT user_id FROM devices WHERE device_uid = ?", [device_uid], (err, results) => {
+    if (err) return res.status(500).json({ success: false, message: "DB error" });
+    if (results.length === 0) return res.status(404).json({ success: false, message: "Zariadenie nenájdené" });
+
+    const user_id = results[0].user_id;
+    if (!user_id) return res.status(400).json({ success: false, message: "Zariadenie nie je priradené žiadnemu používateľovi" });
+
+    // Vloženie merania do DB
+    db.query(
+      "INSERT INTO measurements (device_id, bpm, spo2, led) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?)",
+      [device_uid, bpm, spo2, led],
+      err2 => {
+        if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní merania" });
+        res.json({ success: true, message: "Meranie uložené" });
+      }
+    );
   });
 });
 
