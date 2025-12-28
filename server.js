@@ -4,22 +4,11 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const axios = require("axios");
 
 const app = express();
 const JWT_SECRET = "tajne_heslo_pre_token";
-
-// SMTP konfigurácia (Brevo)
-const mail = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "9edf2f001@smtp-brevo.com",
-    pass: process.env.SMTP_PASS
-  }
-});
 
 app.use(express.static("public"));
 app.use(cors());
@@ -73,13 +62,13 @@ app.post("/api/login", (req, res) => {
 });
 
 // =======================
-// Reset hesla – vygenerovanie tokenu
+// Reset hesla – vygenerovanie tokenu cez Brevo API
 // =======================
-app.post("/api/reset-password", (req, res) => {
+app.post("/api/reset-password", async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ success: false, message: "Chýba email" });
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
+  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB error" });
     if (results.length === 0) return res.status(404).json({ success: false, message: "Email nie je registrovaný" });
 
@@ -90,26 +79,30 @@ app.post("/api/reset-password", (req, res) => {
     db.query(
       "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
       [token, new Date(expires), user.id],
-      err2 => {
+      async (err2) => {
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní tokenu" });
 
         const resetLink = `https://oxymeter-server.onrender.com/reset-password-form.html?token=${token}`;
 
-        mail.sendMail(
-          {
-            from: "Oxymeter <noreply@oxymeter.app>",
-            to: email,
+        // Odoslanie emailu cez Brevo API
+        try {
+          await axios.post("https://api.brevo.com/v3/smtp/email", {
+            sender: { name: "Oxymeter", email: "noreply@oxymeter.app" },
+            to: [{ email }],
             subject: "Obnova hesla - Oxymeter",
-            text: `Klikni na tento link pre nastavenie nového hesla: ${resetLink}`
-          },
-          err3 => {
-            if (err3) {
-              console.log("SMTP error:", err3);
-              return res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu" });
+            textContent: `Klikni na tento link pre nastavenie nového hesla: ${resetLink}`
+          }, {
+            headers: {
+              "api-key": process.env.BREVO_API_KEY,
+              "Content-Type": "application/json"
             }
-            res.json({ success: true, link: resetLink });
-          }
-        );
+          });
+
+          res.json({ success: true, link: resetLink });
+        } catch (err3) {
+          console.log("Brevo API error:", err3.response?.data || err3.message);
+          res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu cez Brevo" });
+        }
       }
     );
   });
