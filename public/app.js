@@ -70,9 +70,12 @@ document.getElementById("loginBtn").onclick = async () => {
 // =======================
 document.getElementById("loadDataBtn").onclick = async () => {
   output.innerHTML = "";
+
   try {
     const res = await fetch(`${API}/api/my-data`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
 
     if (!res.ok) {
@@ -81,7 +84,25 @@ document.getElementById("loadDataBtn").onclick = async () => {
     }
 
     const data = await res.json();
+
+    if (data.length === 0) {
+      output.innerHTML = "<p>Žiadne merania</p>";
+      return;
+    }
+
     data.forEach(m => {
+      const options = {
+        timeZone: "Europe/Bratislava",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      };
+
+      const formattedTime = new Date(m.created_at).toLocaleString("sk-SK", options);
+
       const div = document.createElement("div");
       div.className = "measurement";
       div.innerHTML = `
@@ -91,11 +112,12 @@ document.getElementById("loadDataBtn").onclick = async () => {
         </div>
         <div class="time">
           💡 LED ${m.led}<br>
-          ⏱ ${new Date(m.created_at).toLocaleString("sk-SK")}
+          ⏱ ${formattedTime}
         </div>
       `;
       output.appendChild(div);
     });
+
   } catch (err) {
     console.error("Chyba pri načítaní dát:", err);
     alert("Chyba pri načítaní dát");
@@ -122,11 +144,10 @@ document.getElementById("resetBtn").onclick = async () => {
     }
 
     const data = await res.json();
-    console.log("Reset response:", data); // debug
 
     if (data.success && data.link) {
-      alert("Link na reset hesla bol odoslaný. Otvorí sa formulár v novej záložke.");
-      window.open(data.link, "_blank"); // otvorenie formulára resetu v novej záložke
+      alert("Link na reset hesla bol odoslaný.");
+      window.open(data.link, "_blank");
     } else {
       alert("Nepodarilo sa vygenerovať reset link.");
     }
