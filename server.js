@@ -186,7 +186,7 @@ app.post("/api/assign-device", (req, res) => {
 });
 
 // =======================
-// Prijímanie dát z ESP
+// Prijímanie dát z ESP (OPRAVENÉ – správny čas)
 // =======================
 app.post("/api/send-data", (req, res) => {
   const { bpm, spo2, led, device_uid } = req.body;
@@ -195,7 +195,6 @@ app.post("/api/send-data", (req, res) => {
     return res.status(400).json({ success: false, message: "Chýbajú údaje" });
   }
 
-  // Zisti používateľa podľa zariadenia
   db.query("SELECT user_id FROM devices WHERE device_uid = ?", [device_uid], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB error" });
     if (results.length === 0) return res.status(404).json({ success: false, message: "Zariadenie nenájdené" });
@@ -203,9 +202,8 @@ app.post("/api/send-data", (req, res) => {
     const user_id = results[0].user_id;
     if (!user_id) return res.status(400).json({ success: false, message: "Zariadenie nie je priradené žiadnemu používateľovi" });
 
-    // Vloženie merania do DB
     db.query(
-      "INSERT INTO measurements (device_id, bpm, spo2, led) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?)",
+      "INSERT INTO measurements (device_id, bpm, spo2, led, created_at) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?, CONVERT_TZ(NOW(), '+00:00', '+01:00'))",
       [device_uid, bpm, spo2, led],
       err2 => {
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní merania" });
