@@ -23,7 +23,7 @@ document.getElementById("registerBtn").onclick = async () => {
 
     if (!res.ok) {
       const text = await res.text();
-      return alert(text); 
+      return alert(text);
     }
 
     alert("Registrácia úspešná. Teraz sa môžeš prihlásiť.");
@@ -122,16 +122,14 @@ document.getElementById("resetBtn").onclick = async () => {
     }
 
     const data = await res.json();
-
     console.log("Reset response:", data); // debug
 
     if (data.success && data.link) {
       alert("Link na reset hesla bol odoslaný. Otvorí sa formulár v novej záložke.");
-      window.open(data.link, "_blank"); // ✅ toto otvorí stránku formulára
+      window.open(data.link, "_blank"); // otvorenie formulára resetu v novej záložke
     } else {
       alert("Nepodarilo sa vygenerovať reset link.");
     }
-
   } catch (err) {
     console.error("Chyba pri žiadosti o reset hesla:", err);
     alert("Chyba pri žiadosti o reset hesla");
