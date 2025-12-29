@@ -5,7 +5,7 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const axios = require("axios");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const JWT_SECRET = "tajne_heslo_pre_token";
@@ -26,6 +26,15 @@ const db = mysql.createConnection({
 db.connect(err => {
   if (err) return console.error("MySQL error:", err);
   console.log("MySQL connected");
+});
+
+// Nodemailer (Gmail)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
+  }
 });
 
 // =======================
@@ -62,46 +71,42 @@ app.post("/api/login", (req, res) => {
 });
 
 // =======================
-// Reset hesla – Brevo API
+// Reset hesla – generovanie tokenu
 // =======================
-app.post("/api/reset-password", async (req, res) => {
+app.post("/api/reset-password", (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ success: false, message: "Chýba email" });
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
+  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB error" });
     if (results.length === 0) return res.status(404).json({ success: false, message: "Email nie je registrovaný" });
 
     const user = results[0];
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = Date.now() + 3600 * 1000;
+    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minút
 
     db.query(
       "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
-      [token, new Date(expires), user.id],
+      [token, expires, user.id],
       async (err2) => {
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní tokenu" });
 
         const resetLink = `https://oxymeter-server.onrender.com/reset-password-form.html?token=${token}`;
 
-        try {
-          await axios.post("https://api.brevo.com/v3/smtp/email", {
-            sender: { name: "Oxymeter", email: "noreply@oxymeter.app" },
-            to: [{ email }],
-            subject: "Obnova hesla - Oxymeter",
-            textContent: `Klikni na tento link pre nastavenie nového hesla: ${resetLink}`
-          }, {
-            headers: {
-              "api-key": process.env.BREVO_API_KEY,
-              "Content-Type": "application/json"
-            }
-          });
-
-          res.json({ success: true, link: resetLink });
-        } catch (err3) {
-          console.log("Brevo API error:", err3.response?.data || err3.message);
-          res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu cez Brevo" });
-        }
+        // Odoslanie emailu cez Gmail
+        transporter.sendMail({
+          to: email,
+          subject: "Obnova hesla – Oxymeter",
+          html: `
+            <h2>Reset hesla</h2>
+            <p>Klikni na tento link pre zmenu hesla:</p>
+            <a href="${resetLink}">${resetLink}</a>
+            <p>Platnosť linku: 15 minút</p>
+          `
+        }, (mailErr) => {
+          if (mailErr) return res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu" });
+          res.json({ success: true, message: "Email s resetom bol odoslaný" });
+        });
       }
     );
   });
@@ -186,7 +191,7 @@ app.post("/api/assign-device", (req, res) => {
 });
 
 // =======================
-// Prijímanie dát z ESP – OPRAVENÝ ČAS
+// Prijímanie dát z ESP
 // =======================
 app.post("/api/send-data", (req, res) => {
   const { bpm, spo2, led, device_uid } = req.body;
