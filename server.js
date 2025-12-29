@@ -75,11 +75,13 @@ app.post("/api/forgot-password", async (req, res) => {
 
     const user = results[0];
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minút
+
+    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minút v UTC
+    const expiresFormatted = expires.toISOString().slice(0, 19).replace("T", " ");
 
     db.query(
-      "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
-      [token, expires, user.id],
+      "UPDATE users SET reset_token = ?, reset_token_expires = CONVERT_TZ(?, '+00:00', '+01:00') WHERE id = ?",
+      [token, expiresFormatted, user.id],
       async (err2) => {
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní tokenu" });
 
@@ -87,32 +89,32 @@ app.post("/api/forgot-password", async (req, res) => {
 
         try {
           await axios.post(
-  "https://api.brevo.com/v3/smtp/email",
-  {
-    sender: {
-      name: process.env.BREVO_SENDER_NAME,
-      email: process.env.BREVO_SENDER_EMAIL
-    },
-    to: [{ email }],
-    subject: "Obnova hesla – Oxymeter",
-    htmlContent: `
-      <h2>Reset hesla</h2>
-      <p>Klikni na tento link pre zmenu hesla:</p>
-      <a href="${resetLink}">${resetLink}</a>
-      <p>Platnosť linku: 15 minút</p>
-    `
-  },
-  {
-    headers: {
-      "api-key": process.env.BREVO_API_KEY,
-      "Content-Type": "application/json"
-    }
-  }
-);
+            "https://api.brevo.com/v3/smtp/email",
+            {
+              sender: {
+                name: process.env.BREVO_SENDER_NAME,
+                email: process.env.BREVO_SENDER_EMAIL
+              },
+              to: [{ email }],
+              subject: "Obnova hesla – Oxymeter",
+              htmlContent: `
+                <h2>Reset hesla</h2>
+                <p>Klikni na tento link pre zmenu hesla:</p>
+                <a href="${resetLink}">${resetLink}</a>
+                <p>Platnosť linku: 15 minút</p>
+              `
+            },
+            {
+              headers: {
+                "api-key": process.env.BREVO_API_KEY,
+                "Content-Type": "application/json"
+              }
+            }
+          );
 
           res.json({ success: true, message: "Link na reset hesla bol odoslaný." });
         } catch (e) {
-          console.error("Chyba pri odosielaní emailu:", e);
+          console.error("Brevo API error:", e.response?.data || e.message);
           res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu" });
         }
       }
