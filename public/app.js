@@ -91,6 +91,8 @@ document.getElementById("loadDataBtn").onclick = async () => {
     }
 
     data.forEach(m => {
+      // Formátovanie času na Slovenský čas
+      const date = new Date(m.created_at);
       const options = {
         timeZone: "Europe/Bratislava",
         year: "numeric",
@@ -100,8 +102,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
         minute: "2-digit",
         second: "2-digit"
       };
-
-      const formattedTime = new Date(m.created_at).toLocaleString("sk-SK", options);
+      const formattedTime = date.toLocaleString("sk-SK", options);
 
       const div = document.createElement("div");
       div.className = "measurement";
@@ -145,9 +146,9 @@ document.getElementById("resetBtn").onclick = async () => {
 
     const data = await res.json();
 
-    if (data.success && data.link) {
+    if (data.success) {
       alert("Link na reset hesla bol odoslaný.");
-      window.open(data.link, "_blank");
+      if (data.link) window.open(data.link, "_blank");
     } else {
       alert("Nepodarilo sa vygenerovať reset link.");
     }
