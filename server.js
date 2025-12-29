@@ -73,11 +73,11 @@ app.post("/api/login", (req, res) => {
 // =======================
 // Reset hesla – generovanie tokenu
 // =======================
-app.post("/api/reset-password", (req, res) => {
+app.post("/api/forgot-password", async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ success: false, message: "Chýba email" });
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
+  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB error" });
     if (results.length === 0) return res.status(404).json({ success: false, message: "Email nie je registrovaný" });
 
@@ -93,20 +93,25 @@ app.post("/api/reset-password", (req, res) => {
 
         const resetLink = `https://oxymeter-server.onrender.com/reset-password-form.html?token=${token}`;
 
-        // Odoslanie emailu cez Gmail
-        transporter.sendMail({
-          to: email,
-          subject: "Obnova hesla – Oxymeter",
-          html: `
-            <h2>Reset hesla</h2>
-            <p>Klikni na tento link pre zmenu hesla:</p>
-            <a href="${resetLink}">${resetLink}</a>
-            <p>Platnosť linku: 15 minút</p>
-          `
-        }, (mailErr) => {
-          if (mailErr) return res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu" });
-          res.json({ success: true, message: "Email s resetom bol odoslaný" });
-        });
+        try {
+          const info = await transporter.sendMail({
+            from: `"Oxymeter" <${process.env.GMAIL_USER}>`,
+            to: email,
+            subject: "Obnova hesla – Oxymeter",
+            html: `
+              <h2>Reset hesla</h2>
+              <p>Klikni na tento link pre zmenu hesla:</p>
+              <a href="${resetLink}">${resetLink}</a>
+              <p>Platnosť linku: 15 minút</p>
+            `
+          });
+
+          console.log("Email poslaný:", info.messageId);
+          res.json({ success: true, message: "Link na reset hesla bol odoslaný." });
+        } catch (e) {
+          console.error("Chyba pri odosielaní emailu:", e);
+          res.status(500).json({ success: false, message: "Chyba pri odosielaní emailu" });
+        }
       }
     );
   });
@@ -191,7 +196,7 @@ app.post("/api/assign-device", (req, res) => {
 });
 
 // =======================
-// Prijímanie dát z ESP
+// Prijímanie dát z ESP s opravou času
 // =======================
 app.post("/api/send-data", (req, res) => {
   const { bpm, spo2, led, device_uid } = req.body;
