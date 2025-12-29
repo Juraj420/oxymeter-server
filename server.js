@@ -4,8 +4,8 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 
 const app = express();
 const JWT_SECRET = "tajne_heslo_pre_token";
@@ -28,14 +28,6 @@ db.connect(err => {
   console.log("MySQL connected");
 });
 
-// Nodemailer (Gmail)
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
-  }
-});
 
 // =======================
 // Registrácia
@@ -94,19 +86,30 @@ app.post("/api/forgot-password", async (req, res) => {
         const resetLink = `https://oxymeter-server.onrender.com/reset-password-form.html?token=${token}`;
 
         try {
-          const info = await transporter.sendMail({
-            from: `"Oxymeter" <${process.env.GMAIL_USER}>`,
-            to: email,
-            subject: "Obnova hesla – Oxymeter",
-            html: `
-              <h2>Reset hesla</h2>
-              <p>Klikni na tento link pre zmenu hesla:</p>
-              <a href="${resetLink}">${resetLink}</a>
-              <p>Platnosť linku: 15 minút</p>
-            `
-          });
+          await axios.post(
+  "https://api.brevo.com/v3/smtp/email",
+  {
+    sender: {
+      name: process.env.BREVO_SENDER_NAME,
+      email: process.env.BREVO_SENDER_EMAIL
+    },
+    to: [{ email }],
+    subject: "Obnova hesla – Oxymeter",
+    htmlContent: `
+      <h2>Reset hesla</h2>
+      <p>Klikni na tento link pre zmenu hesla:</p>
+      <a href="${resetLink}">${resetLink}</a>
+      <p>Platnosť linku: 15 minút</p>
+    `
+  },
+  {
+    headers: {
+      "api-key": process.env.BREVO_API_KEY,
+      "Content-Type": "application/json"
+    }
+  }
+);
 
-          console.log("Email poslaný:", info.messageId);
           res.json({ success: true, message: "Link na reset hesla bol odoslaný." });
         } catch (e) {
           console.error("Chyba pri odosielaní emailu:", e);
