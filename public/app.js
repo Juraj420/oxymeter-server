@@ -128,12 +128,15 @@ document.getElementById("loadDataBtn").onclick = async () => {
 // =======================
 // Reset hesla
 // =======================
+// =======================
+// Reset hesla
+// =======================
 document.getElementById("resetBtn").onclick = async () => {
   const email = prompt("Zadaj svoj email pre reset hesla:");
   if (!email) return;
 
   try {
-    const res = await fetch(`${API}/api/reset-password`, {
+    const res = await fetch(`${API}/api/forgot-password`, { // <-- tu je zmena
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email.trim() })
@@ -157,3 +160,4 @@ document.getElementById("resetBtn").onclick = async () => {
     alert("Chyba pri žiadosti o reset hesla");
   }
 };
+
