@@ -92,7 +92,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
 
     data.forEach(m => {
       // Formátovanie času na Slovenský čas
-      const date = new Date(m.created_at);
+     const date = new Date(m.created_at + " UTC");
       const options = {
         timeZone: "Europe/Bratislava",
         year: "numeric",
