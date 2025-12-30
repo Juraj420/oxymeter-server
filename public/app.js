@@ -90,10 +90,10 @@ document.getElementById("loadDataBtn").onclick = async () => {
       return;
     }
 
-    data.forEach(m => {
-      // Formátovanie času na Slovenský čas
-     const date = new Date(m.created_at + " UTC");
-      const options = {
+    // Funkcia na opravu času
+    function fixTime(datetimeString) {
+      const iso = datetimeString.replace(" ", "T") + "Z";
+      return new Date(iso).toLocaleString("sk-SK", {
         timeZone: "Europe/Bratislava",
         year: "numeric",
         month: "2-digit",
@@ -101,8 +101,12 @@ document.getElementById("loadDataBtn").onclick = async () => {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit"
-      };
-      const formattedTime = date.toLocaleString("sk-SK", options);
+      });
+    }
+
+    // Vykreslenie meraní
+    data.forEach(m => {
+      const formattedTime = fixTime(m.created_at);
 
       const div = document.createElement("div");
       div.className = "measurement";
