@@ -14,23 +14,27 @@ app.use(express.static("public"));
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-const db = mysql.createConnection({
+// =======================
+// Pool DB pre stabilitu
+// =======================
+const db = mysql.createPool({
   host: "sql5.freesqldatabase.com",
-  user: "sql5813284",
-  password: "ASrLq5r2Mb",
-  database: "sql5813284",
+  user: "sql5813294",
+  password: "jMDWJt39In",
+  database: "sql5813294",
   port: 3306,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  ssl: { rejectUnauthorized: false }
 });
 
-
-db.connect(err => {
-  if (err) return console.error("MySQL error:", err);
-  console.log("MySQL connected");
+// Test spojenia
+db.getConnection((err, connection) => {
+  if (err) return console.error("MySQL pool error:", err);
+  console.log("MySQL pool connected");
+  connection.release();
 });
-
 
 // =======================
 // Registrácia
@@ -49,27 +53,16 @@ app.post("/api/register", async (req, res) => {
     [email, hash],
     (err) => {
       if (err) {
-        console.error("INSERT ERROR:", err); // 🔥 Toto uvidíš v Render logu
-
-        // Ak je to duplicita, vrátime správnu hlášku
+        console.error("INSERT ERROR:", err);
         if (err.code === "ER_DUP_ENTRY") {
           return res.status(400).json({
             success: false,
             message: "Používateľ už existuje"
           });
         }
-
-        // Iné chyby = skutočná DB chyba
-        return res.status(500).json({
-          success: false,
-          message: "DB ERROR"
-        });
+        return res.status(500).json({ success: false, message: "DB ERROR" });
       }
-
-      res.json({
-        success: true,
-        message: "Registrácia prebehla úspešne"
-      });
+      res.json({ success: true, message: "Registrácia prebehla úspešne" });
     }
   );
 });
@@ -107,7 +100,7 @@ app.post("/api/forgot-password", async (req, res) => {
     const user = results[0];
     const token = crypto.randomBytes(32).toString("hex");
 
-    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minút v UTC
+    const expires = new Date(Date.now() + 15 * 60 * 1000);
     const expiresFormatted = expires.toISOString().slice(0, 19).replace("T", " ");
 
     db.query(
