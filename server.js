@@ -37,13 +37,41 @@ db.connect(err => {
 // =======================
 app.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ success: false, message: "Chýbajú údaje" });
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: "Chýbajú údaje" });
+  }
 
   const hash = await bcrypt.hash(password, 10);
-  db.query("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash], err => {
-    if (err) return res.status(400).json({ success: false, message: "Používateľ už existuje" });
-    res.json({ success: true, message: "Registrácia prebehla úspešne" });
-  });
+
+  db.query(
+    "INSERT INTO users (email, password) VALUES (?, ?)",
+    [email, hash],
+    (err) => {
+      if (err) {
+        console.error("INSERT ERROR:", err); // 🔥 Toto uvidíš v Render logu
+
+        // Ak je to duplicita, vrátime správnu hlášku
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(400).json({
+            success: false,
+            message: "Používateľ už existuje"
+          });
+        }
+
+        // Iné chyby = skutočná DB chyba
+        return res.status(500).json({
+          success: false,
+          message: "DB ERROR"
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Registrácia prebehla úspešne"
+      });
+    }
+  );
 });
 
 // =======================
