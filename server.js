@@ -14,14 +14,17 @@ app.use(express.static("public"));
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// MySQL pripojenie
 const db = mysql.createConnection({
   host: "sql5.freesqldatabase.com",
   user: "sql5813284",
   password: "ASrLq5r2Mb",
   database: "sql5813284",
-  port: 3306
+  port: 3306,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 db.connect(err => {
   if (err) return console.error("MySQL error:", err);
