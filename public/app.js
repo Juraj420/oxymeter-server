@@ -92,17 +92,22 @@ document.getElementById("loadDataBtn").onclick = async () => {
 
     // Funkcia na opravu času
     function fixTime(datetimeString) {
-      const iso = datetimeString.replace(" ", "T") + "Z";
-      return new Date(iso).toLocaleString("sk-SK", {
-        timeZone: "Europe/Bratislava",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
-    }
+  if (!datetimeString) return "Neznámy čas";
+
+  const date = new Date(datetimeString);
+  if (isNaN(date.getTime())) return "Neplatný dátum";
+
+  return date.toLocaleString("sk-SK", {
+    timeZone: "Europe/Bratislava",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+}
+
 
     // Vykreslenie meraní
     data.forEach(m => {
@@ -129,9 +134,6 @@ document.getElementById("loadDataBtn").onclick = async () => {
   }
 };
 
-// =======================
-// Reset hesla
-// =======================
 // =======================
 // Reset hesla
 // =======================
