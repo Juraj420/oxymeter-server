@@ -114,6 +114,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
 }
 
 
+
     // Vykreslenie meraní
     data.forEach(m => {
       const formattedTime = fixTime(m.created_at);
