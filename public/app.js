@@ -91,8 +91,13 @@ document.getElementById("loadDataBtn").onclick = async () => {
     }
 
     // Funkcia na opravu času
-    function fixTime(datetimeString) {
+   function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
+
+  // oprava MySQL formátu
+  if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
+    datetimeString = datetimeString.replace(" ", "T") + "Z";
+  }
 
   const date = new Date(datetimeString);
   if (isNaN(date.getTime())) return "Neplatný dátum";
