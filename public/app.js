@@ -94,30 +94,17 @@ document.getElementById("loadDataBtn").onclick = async () => {
    function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
 
-  // ak je formát "YYYY-MM-DD HH:MM:SS", ber ho ako LOKÁLNY čas
-  if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
-    const [datePart, timePart] = datetimeString.split(" ");
-    const [y, m, d] = datePart.split("-");
-    const [h, min, s] = timePart.split(":");
-
-    // vytvor dátum ako lokálny, nie UTC
-    const date = new Date(y, m - 1, d, h, min, s);
-
-    return date.toLocaleString("sk-SK", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
+  // Ak server posiela MySQL formát (bez Z)
+  if (datetimeString.includes(" ")) {
+    datetimeString = datetimeString.replace(" ", "T") + "Z";
   }
 
-  // ak je to ISO (má T alebo Z), spracuj normálne
   const date = new Date(datetimeString);
+
   if (isNaN(date.getTime())) return "Neplatný dátum";
 
   return date.toLocaleString("sk-SK", {
+    timeZone: "Europe/Bratislava",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
