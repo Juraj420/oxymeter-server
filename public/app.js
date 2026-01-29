@@ -94,11 +94,15 @@ document.getElementById("loadDataBtn").onclick = async () => {
 function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
 
-  // MySQL TIMESTAMP vracia už čas podľa session, takže Z ani timeZone netreba
-  const date = new Date(datetimeString.replace(" ", "T"));
+  // Prevedieme MySQL formát na ISO + Z (UTC)
+  const isoString = datetimeString.replace(" ", "T") + "Z";
+  const date = new Date(isoString);
+
   if (isNaN(date.getTime())) return "Neplatný dátum";
 
+  // Automaticky zohľadní zimný/leto čas pre Slovensko
   return date.toLocaleString("sk-SK", {
+    timeZone: "Europe/Bratislava",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
