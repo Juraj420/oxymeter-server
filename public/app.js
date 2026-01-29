@@ -108,6 +108,7 @@ function fixTime(datetimeString) {
   });
 }
 
+
     // Vykreslenie meraní
     data.forEach(m => {
       const formattedTime = fixTime(m.created_at);
