@@ -94,23 +94,19 @@ document.getElementById("loadDataBtn").onclick = async () => {
 function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
 
-  // Prevedieme MySQL formát na ISO + Z (UTC)
-  const isoString = datetimeString.replace(" ", "T") + "Z";
-  const date = new Date(isoString);
+  // Pre MySQL formát
+  if (datetimeString.includes(" ")) {
+    datetimeString = datetimeString.replace(" ", "T"); 
+  }
+
+  const date = new Date(datetimeString);
 
   if (isNaN(date.getTime())) return "Neplatný dátum";
 
-  // Automaticky zohľadní zimný/leto čas pre Slovensko
-  return date.toLocaleString("sk-SK", {
-    timeZone: "Europe/Bratislava",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
-  });
+  // ZOBRAZ PRESNE TO, ČO JE V DB – BEZ PREPOČTU
+  return date.toLocaleString("sk-SK");
 }
+
 
 
     // Vykreslenie meraní
