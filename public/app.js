@@ -1,4 +1,4 @@
-let token = null;
+et token = null;
 const API = "https://oxymeter-server.onrender.com";
 
 const authDiv = document.getElementById("auth");
@@ -90,22 +90,28 @@ document.getElementById("loadDataBtn").onclick = async () => {
       return;
     }
 
-    // Funkcia na formátovanie času presne podľa DB
-function fixTime(datetimeString) {
+    // Funkcia na opravu času
+   function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
 
-  // Pre MySQL formát: 2026-01-29 20:03:00
-  if (datetimeString.includes(" ")) {
-    datetimeString = datetimeString.replace(" ", "T") + "+01:00";
+  // oprava MySQL formátu
+  if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
+    datetimeString = datetimeString.replace(" ", "T") + "Z";
   }
 
   const date = new Date(datetimeString);
-
   if (isNaN(date.getTime())) return "Neplatný dátum";
 
-  return date.toLocaleString("sk-SK");
+  return date.toLocaleString("sk-SK", {
+    timeZone: "Europe/Bratislava",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
 }
-
 
 
 
@@ -166,4 +172,3 @@ document.getElementById("resetBtn").onclick = async () => {
     alert("Chyba pri žiadosti o reset hesla");
   }
 };
-
