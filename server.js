@@ -218,7 +218,7 @@ app.post("/api/send-data", (req, res) => {
     if (!user_id) return res.status(400).json({ success: false, message: "Zariadenie nie je priradené žiadnemu používateľovi" });
 
     db.query(
-      "INSERT INTO measurements (device_id, bpm, spo2, led, created_at) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?, NOW())"
+       "INSERT INTO measurements (device_id, bpm, spo2, led, created_at) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?, UTC_TIMESTAMP())",
       [device_uid, bpm, spo2, led],
       err2 => {
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní merania" });
