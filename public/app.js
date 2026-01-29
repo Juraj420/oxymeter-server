@@ -1,4 +1,4 @@
-et token = null;
+let token = null;
 const API = "https://oxymeter-server.onrender.com";
 
 const authDiv = document.getElementById("auth");
