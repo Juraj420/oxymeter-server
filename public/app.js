@@ -96,7 +96,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
 
   // oprava MySQL formátu
   if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
-    datetimeString = datetimeString.replace(" ", "T") + "Z";
+    datetimeString = datetimeString.replace(" ", "T");
   }
 
   const date = new Date(datetimeString);
