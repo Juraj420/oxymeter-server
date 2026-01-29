@@ -90,21 +90,15 @@ document.getElementById("loadDataBtn").onclick = async () => {
       return;
     }
 
-    // Funkcia na opravu času
-   function fixTime(datetimeString) {
+    // Funkcia na formátovanie času presne podľa DB
+function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
 
-  // Ak server posiela MySQL formát (bez Z)
-  if (datetimeString.includes(" ")) {
-    datetimeString = datetimeString.replace(" ", "T") + "Z"; // Pridáme Z → UTC
-  }
-
-  const date = new Date(datetimeString);
-
+  // MySQL TIMESTAMP vracia už čas podľa session, takže Z ani timeZone netreba
+  const date = new Date(datetimeString.replace(" ", "T"));
   if (isNaN(date.getTime())) return "Neplatný dátum";
 
   return date.toLocaleString("sk-SK", {
-    timeZone: "Europe/Bratislava",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -113,10 +107,6 @@ document.getElementById("loadDataBtn").onclick = async () => {
     second: "2-digit"
   });
 }
-
-
-
-
 
     // Vykreslenie meraní
     data.forEach(m => {
