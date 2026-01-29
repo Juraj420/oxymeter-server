@@ -94,18 +94,18 @@ document.getElementById("loadDataBtn").onclick = async () => {
 function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
 
-  // Pre MySQL formát
+  // Pre MySQL formát: 2026-01-29 20:03:00
   if (datetimeString.includes(" ")) {
-    datetimeString = datetimeString.replace(" ", "T"); 
+    datetimeString = datetimeString.replace(" ", "T") + "+01:00";
   }
 
   const date = new Date(datetimeString);
 
   if (isNaN(date.getTime())) return "Neplatný dátum";
 
-  // ZOBRAZ PRESNE TO, ČO JE V DB – BEZ PREPOČTU
   return date.toLocaleString("sk-SK");
 }
+
 
 
 
