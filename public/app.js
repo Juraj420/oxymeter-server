@@ -96,7 +96,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
 
   // Ak server posiela MySQL formát (bez Z)
   if (datetimeString.includes(" ")) {
-    datetimeString = datetimeString.replace(" ", "T") + "Z";
+    datetimeString = datetimeString.replace(" ", "T"); // bez Z!
   }
 
   const date = new Date(datetimeString);
@@ -113,6 +113,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
     second: "2-digit"
   });
 }
+
 
 
 
