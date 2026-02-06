@@ -103,14 +103,17 @@ document.querySelectorAll(".toggle-password").forEach(button => {
   button.onclick = () => {
     const targetId = button.getAttribute("data-target");
     const input = document.getElementById(targetId);
-    const icon = button.querySelector(".eye-icon");
+    const eyeOpen = button.querySelector(".eye-open");
+    const eyeClosed = button.querySelector(".eye-closed");
     
     if (input.type === "password") {
       input.type = "text";
-      icon.textContent = "🙈";
+      eyeOpen.style.display = "none";
+      eyeClosed.style.display = "block";
     } else {
       input.type = "password";
-      icon.textContent = "👁️";
+      eyeOpen.style.display = "block";
+      eyeClosed.style.display = "none";
     }
   };
 });
@@ -190,7 +193,7 @@ document.getElementById("registerBtn").onclick = async () => {
       return;
     }
 
-    alert("✅ Registrácia úspešná! Teraz sa môžete prihlásiť.");
+    alert("Registrácia úspešná! Teraz sa môžete prihlásiť.");
     
     // Prepni na prihlásenie
     document.getElementById("registerSection").style.display = "none";
@@ -364,7 +367,7 @@ document.getElementById("resetBtn").onclick = async () => {
   if (!email) return;
 
   if (!isValidEmail(email.trim())) {
-    alert("❌ Neplatný formát emailu");
+    alert("Neplatný formát emailu");
     return;
   }
 
@@ -377,20 +380,20 @@ document.getElementById("resetBtn").onclick = async () => {
 
     if (!res.ok) {
       const text = await res.text();
-      alert(`❌ ${text}`);
+      alert(`${text}`);
       return;
     }
 
     const data = await res.json();
 
     if (data.success) {
-      alert("✅ Link na reset hesla bol odoslaný.");
+      alert("Link na reset hesla bol odoslaný.");
       if (data.link) window.open(data.link, "_blank");
     } else {
-      alert("❌ Nepodarilo sa vygenerovať reset link.");
+      alert("Nepodarilo sa vygenerovať reset link.");
     }
   } catch (err) {
     console.error("Chyba pri žiadosti o reset hesla:", err);
-    alert("❌ Chyba pri žiadosti o reset hesla");
+    alert("Chyba pri žiadosti o reset hesla");
   }
 };
