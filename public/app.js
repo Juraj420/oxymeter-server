@@ -91,19 +91,14 @@ document.getElementById("loadDataBtn").onclick = async () => {
     }
 
     // Funkcia na opravu času
-   function fixTime(datetimeString) {
+  function fixTime(datetimeString) {
   if (!datetimeString) return "Neznámy čas";
-
-  // oprava MySQL formátu
   if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
-    datetimeString = datetimeString.replace(" ", "T") + "Z";
+    datetimeString = datetimeString.replace(" ", "T");
   }
-
   const date = new Date(datetimeString);
   if (isNaN(date.getTime())) return "Neplatný dátum";
-
   return date.toLocaleString("sk-SK", {
-    timeZone: "Europe/Bratislava",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -112,7 +107,6 @@ document.getElementById("loadDataBtn").onclick = async () => {
     second: "2-digit"
   });
 }
-
 
 
     // Vykreslenie meraní
