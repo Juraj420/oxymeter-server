@@ -307,3 +307,16 @@ button:disabled {
 #loginSection {
   animation: fadeIn 0.4s ease;
 }
+
+/* ===========================
+   Ikonka oka - emoji verzia
+   =========================== */
+.eye-icon {
+  font-size: 18px;
+  line-height: 1;
+  user-select: none;
+}
+
+.toggle-password.active .eye-icon {
+  opacity: 0.7;
+}
