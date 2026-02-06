@@ -2,36 +2,96 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oxymeter Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="container">
-
   <h1>🫀 Oxymeter</h1>
-
+  
   <div id="auth">
-    <h2>Registrácia</h2>
-    <input type="email" id="regEmail" placeholder="Email">
-    <input type="password" id="regPass" placeholder="Heslo">
-    <button id="registerBtn">Registrovať</button>
+    <!-- Registrácia -->
+    <div id="registerSection">
+      <h2>Registrácia</h2>
+      
+      <div class="input-group">
+        <input type="email" id="regEmail" placeholder="Email" autocomplete="email">
+        <span class="error-message" id="regEmailError"></span>
+      </div>
 
-    <h2>Prihlásenie</h2>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPass" placeholder="Heslo">
-    <button id="loginBtn">Prihlásiť</button>
+      <div class="input-group">
+        <div class="password-wrapper">
+          <input type="password" id="regPass" placeholder="Heslo (min. 8 znakov)" autocomplete="new-password">
+          <button type="button" class="toggle-password" data-target="regPass">
+            <span class="eye-icon">👁️</span>
+          </button>
+        </div>
+        <span class="error-message" id="regPassError"></span>
+        <div class="password-strength" id="regPassStrength"></div>
+      </div>
 
-    <!-- 🔥 Pridané tlačidlo na reset hesla -->
-    <button id="resetBtn" class="secondary">Zabudol som heslo</button>
+      <div class="input-group">
+        <div class="password-wrapper">
+          <input type="password" id="regPassConfirm" placeholder="Zopakujte heslo" autocomplete="new-password">
+          <button type="button" class="toggle-password" data-target="regPassConfirm">
+            <span class="eye-icon">👁️</span>
+          </button>
+        </div>
+        <span class="error-message" id="regPassConfirmError"></span>
+      </div>
+
+      <button id="registerBtn" class="primary-btn">
+        <span class="btn-text">Registrovať</span>
+        <span class="btn-spinner" style="display:none;">⏳</span>
+      </button>
+
+      <p class="switch-auth">
+        Už máte účet? <a href="#" id="showLogin">Prihláste sa</a>
+      </p>
+    </div>
+
+    <!-- Prihlásenie -->
+    <div id="loginSection" style="display:none;">
+      <h2>Prihlásenie</h2>
+      
+      <div class="input-group">
+        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+        <span class="error-message" id="loginEmailError"></span>
+      </div>
+
+      <div class="input-group">
+        <div class="password-wrapper">
+          <input type="password" id="loginPass" placeholder="Heslo" autocomplete="current-password">
+          <button type="button" class="toggle-password" data-target="loginPass">
+            <span class="eye-icon">👁️</span>
+          </button>
+        </div>
+        <span class="error-message" id="loginPassError"></span>
+      </div>
+
+      <button id="loginBtn" class="primary-btn">
+        <span class="btn-text">Prihlásiť</span>
+        <span class="btn-spinner" style="display:none;">⏳</span>
+      </button>
+
+      <button id="resetBtn" class="secondary-btn">Zabudol som heslo</button>
+
+      <p class="switch-auth">
+        Nemáte účet? <a href="#" id="showRegister">Registrujte sa</a>
+      </p>
+    </div>
   </div>
 
+  <!-- Dashboard -->
   <div id="dashboard" style="display:none;">
-    <p>Prihlásený ako: <b id="userEmail"></b></p>
-    <button id="loadDataBtn">Načítať merania</button>
+    <div class="dashboard-header">
+      <p>Prihlásený ako: <b id="userEmail"></b></p>
+      <button id="logoutBtn" class="secondary-btn">Odhlásiť sa</button>
+    </div>
+    <button id="loadDataBtn" class="primary-btn">Načítať merania</button>
     <div id="output"></div>
   </div>
-
 </div>
 
 <script src="app.js"></script>
