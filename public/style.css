@@ -39,9 +39,11 @@ h2 {
 }
 
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"] {
   width: 100%;
   padding: 10px;
+  padding-right: 10px;
   margin: 8px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -51,7 +53,8 @@ input[type="password"] {
 }
 
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="text"]:focus {
   outline: none;
   border-color: #28a745;
   box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
@@ -76,35 +79,42 @@ input.error {
 .password-wrapper {
   position: relative;
   width: 100%;
+  display: block;
 }
 
 .password-wrapper input {
   width: 100%;
-  padding-right: 45px;
+  padding-right: 50px !important;
   box-sizing: border-box;
 }
 
 .toggle-password {
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
+  right: 0;
+  top: 8px;
+  background: transparent !important;
+  border: none !important;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
   width: auto;
   height: auto;
   margin: 0;
   color: #666;
+  transition: opacity 0.2s;
 }
 
 .toggle-password:hover {
   opacity: 0.7;
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.toggle-password:active {
+  transform: none !important;
 }
 
 .eye-icon {
@@ -295,11 +305,11 @@ button:disabled {
   }
   
   .password-wrapper input {
-    padding-right: 40px;
+    padding-right: 45px !important;
   }
   
   .toggle-password {
-    right: 5px;
+    right: 0;
   }
   
   .eye-icon {
