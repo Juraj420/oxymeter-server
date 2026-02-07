@@ -311,12 +311,39 @@ button:disabled {
 /* ===========================
    Ikonka oka - emoji verzia
    =========================== */
+/* ===========================
+   Ikonka oka - vždy viditeľná
+   =========================== */
 .eye-icon {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1;
   user-select: none;
+  display: block;
 }
 
-.toggle-password.active .eye-icon {
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  width: auto;
+  margin: 0;
+  color: #666; /* Farba ikony */
+}
+
+.toggle-password:hover {
   opacity: 0.7;
+  background: none;
+}
+
+/* Keď je heslo viditeľné (active) */
+.toggle-password.active .eye-icon {
+  text-decoration: line-through;
+  color: #999;
 }
