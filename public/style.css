@@ -40,13 +40,14 @@ h2 {
 
 input[type="email"],
 input[type="password"] {
-  width: 95%;
+  width: 100%;
   padding: 10px;
   margin: 8px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 input[type="email"]:focus,
@@ -74,19 +75,20 @@ input.error {
    =========================== */
 .password-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
+  width: 100%;
 }
 
 .password-wrapper input {
   width: 100%;
   padding-right: 45px;
-  flex: 1; /* PRIDAJ TOTO */
+  box-sizing: border-box;
 }
 
 .toggle-password {
   position: absolute;
   right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
@@ -96,14 +98,13 @@ input.error {
   justify-content: center;
   transition: opacity 0.2s;
   width: auto;
+  height: auto;
   margin: 0;
   color: #666;
-  flex-shrink: 0; /* PRIDAJ TOTO - zabráni zmenšeniu */
 }
 
 .toggle-password:hover {
   opacity: 0.7;
-  background: none;
 }
 
 .eye-icon {
@@ -111,7 +112,7 @@ input.error {
   line-height: 1;
   user-select: none;
   display: block;
-  pointer-events: none; /* PRIDAJ TOTO - zabráni klikaniu na emoji */
+  pointer-events: none;
 }
 
 /* Keď je heslo viditeľné (active) */
@@ -119,6 +120,7 @@ input.error {
   text-decoration: line-through;
   color: #999;
 }
+
 /* ===========================
    Password strength indikátor
    =========================== */
@@ -297,8 +299,11 @@ button:disabled {
   }
   
   .toggle-password {
+    right: 5px;
+  }
+  
+  .eye-icon {
     font-size: 18px;
-    right: 3px;
   }
   
   .dashboard-header {
@@ -317,44 +322,4 @@ button:disabled {
 #registerSection,
 #loginSection {
   animation: fadeIn 0.4s ease;
-}
-
-/* ===========================
-   Ikonka oka - emoji verzia
-   =========================== */
-/* ===========================
-   Ikonka oka - vždy viditeľná
-   =========================== */
-.eye-icon {
-  font-size: 20px;
-  line-height: 1;
-  user-select: none;
-  display: block;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s;
-  width: auto;
-  margin: 0;
-  color: #666; /* Farba ikony */
-}
-
-.toggle-password:hover {
-  opacity: 0.7;
-  background: none;
-}
-
-/* Keď je heslo viditeľné (active) */
-.toggle-password.active .eye-icon {
-  text-decoration: line-through;
-  color: #999;
 }
