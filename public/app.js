@@ -299,21 +299,22 @@ document.getElementById("loadDataBtn").onclick = async () => {
     }
 
     function fixTime(datetimeString) {
-      if (!datetimeString) return "Neznámy čas";
-      if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
-        datetimeString = datetimeString.replace(" ", "T");
-      }
-      const date = new Date(datetimeString);
-      if (isNaN(date.getTime())) return "Neplatný dátum";
-      return date.toLocaleString("sk-SK", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
-    }
+  if (!datetimeString) return "Neznámy čas";
+  if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
+    datetimeString = datetimeString.replace(" ", "T"); // BEZ + "Z" !!!
+  }
+  const date = new Date(datetimeString);
+  if (isNaN(date.getTime())) return "Neplatný dátum";
+  return date.toLocaleString("sk-SK", {
+    // BEZ timeZone !!!
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+}
 
     output.innerHTML = "";
 
