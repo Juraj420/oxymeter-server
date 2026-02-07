@@ -81,15 +81,15 @@ input.error {
 .password-wrapper input {
   width: 100%;
   padding-right: 45px;
+  flex: 1; /* PRIDAJ TOTO */
 }
 
 .toggle-password {
   position: absolute;
-  right: 5px;
+  right: 10px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
   padding: 8px;
   display: flex;
   align-items: center;
@@ -97,17 +97,28 @@ input.error {
   transition: opacity 0.2s;
   width: auto;
   margin: 0;
+  color: #666;
+  flex-shrink: 0; /* PRIDAJ TOTO - zabráni zmenšeniu */
 }
 
 .toggle-password:hover {
-  opacity: 0.6;
+  opacity: 0.7;
   background: none;
 }
 
 .eye-icon {
+  font-size: 20px;
+  line-height: 1;
   user-select: none;
+  display: block;
+  pointer-events: none; /* PRIDAJ TOTO - zabráni klikaniu na emoji */
 }
 
+/* Keď je heslo viditeľné (active) */
+.toggle-password.active .eye-icon {
+  text-decoration: line-through;
+  color: #999;
+}
 /* ===========================
    Password strength indikátor
    =========================== */
