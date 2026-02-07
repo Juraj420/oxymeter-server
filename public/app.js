@@ -101,11 +101,11 @@ document.querySelectorAll(".toggle-password").forEach(button => {
     
     if (input.type === "password") {
       input.type = "text";
-      icon.textContent = "👁️‍🗨️"; // Prečiarknuté oko
+      icon.style.textDecoration = "line-through"; // Prečiarknutie
       button.classList.add("active");
     } else {
       input.type = "password";
-      icon.textContent = "👁";
+      icon.style.textDecoration = "none"; // Bez prečiarknutia
       button.classList.remove("active");
     }
   };
