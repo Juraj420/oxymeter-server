@@ -276,7 +276,7 @@ document.getElementById("logoutBtn").onclick = () => {
 // Načítanie dát používateľa
 // =======================
 document.getElementById("loadDataBtn").onclick = async () => {
-  output.innerHTML = "<p>⏳ Načítavam...</p>";
+  output.innerHTML = "<p>Načítavam...</p>";
 
   try {
     const res = await fetch(`${API}/api/my-data`, {
@@ -294,7 +294,7 @@ document.getElementById("loadDataBtn").onclick = async () => {
     const data = await res.json();
 
     if (data.length === 0) {
-      output.innerHTML = "<p>📭 Žiadne merania</p>";
+      output.innerHTML = "<p>Žiadne merania</p>";
       return;
     }
 
