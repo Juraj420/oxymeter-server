@@ -380,3 +380,84 @@ document.getElementById("resetBtn").onclick = async () => {
     alert("Chyba pri žiadosti o reset hesla");
   }
 };
+
+// =======================
+// Reset hesla stránka - funkcie
+// =======================
+function showErrorReset(message) {
+  const errorSpan = document.getElementById("passwordError");
+  const input = document.getElementById("newPass");
+  
+  if (errorSpan && input) {
+    errorSpan.textContent = message;
+    errorSpan.style.display = "block";
+    input.classList.add("error");
+    
+    setTimeout(() => {
+      errorSpan.style.display = "none";
+      input.classList.remove("error");
+    }, 3000);
+  }
+}
+
+// Tlačidlo pre zmenu hesla
+const submitResetBtn = document.getElementById("submitBtn");
+if (submitResetBtn && document.getElementById("newPass")) {
+  submitResetBtn.onclick = async function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    const newPassword = document.getElementById("newPass").value;
+    const input = document.getElementById("newPass");
+    
+    input.classList.remove("error");
+    const errorSpan = document.getElementById("passwordError");
+    if (errorSpan) errorSpan.style.display = "none";
+    
+    if (!newPassword) {
+      showErrorReset("Zadajte nové heslo");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      showErrorReset("Heslo musí obsahovať aspoň 8 znakov");
+      return;
+    }
+
+    submitResetBtn.disabled = true;
+    submitResetBtn.textContent = "Prebieha zmena...";
+
+    try {
+      const res = await fetch(`${API}/api/set-new-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        alert(data.message);
+        window.location.href = "/";
+      } else {
+        showErrorReset(data.message || "Nastala chyba pri zmene hesla");
+        submitResetBtn.disabled = false;
+        submitResetBtn.textContent = "Zmeniť heslo";
+      }
+    } catch (error) {
+      showErrorReset("Nastala chyba. Skúste to prosím znova.");
+      submitResetBtn.disabled = false;
+      submitResetBtn.textContent = "Zmeniť heslo";
+    }
+  };
+}
+
+// Enter key support pre reset hesla
+const newPassInput = document.getElementById("newPass");
+if (newPassInput) {
+  newPassInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      const submitBtn = document.getElementById("submitBtn");
+      if (submitBtn) submitBtn.click();
+    }
+  });
+}
