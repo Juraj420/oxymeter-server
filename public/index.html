@@ -1,99 +1,90 @@
-<!DOCTYPE html>
-<html lang="sk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oxymeter Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="container">
-  <h1>🫀Oxymeter</h1>
+<!DOCTYPE html>                      <!-- Deklarácia typu dokumentu - HTML5 -->
+<html lang="sk">                     <!-- Otváracie HTML tag, jazyk nastavený na slovenčinu -->
+<head>                               <!-- Začiatok hlavičky dokumentu (metadáta, štýly, skripty) -->
+  <meta charset="UTF-8">             <!-- Nastavenie kódovania znakov na UTF-8 (podpora slovenských znakov) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Nastavenie viewportu pre responzívny dizajn na mobiloch -->
+  <title>Oxymeter Dashboard</title>  <!-- Názov stránky zobrazený v záložke prehliadača -->
+  <link rel="stylesheet" href="style.css">  <!-- Pripojenie externého CSS súboru pre štýlovanie -->
+</head>                              <!-- Koniec hlavičky -->
+<body>                               <!-- Začiatok tela dokumentu (viditeľný obsah stránky) -->
+<div class="container">              <!-- Hlavný kontajner pre celú aplikáciu -->
+  <h1>🫀Oxymeter</h1>                <!-- Hlavný nadpis stránky s ikonou srdca -->
   
-  <div id="auth">
-    <!-- Registrácia -->
-    <div id="registerSection">
-      <h2>Registrácia</h2>
+  <div id="auth">                    <!-- Sekcia pre autentifikáciu (registrácia a prihlásenie) -->
+    <!-- Registrácia -->             <!-- HTML komentár - popis nasledujúcej sekcie -->
+    <div id="registerSection">       <!-- Sekcia registračného formulára -->
+      <h2>Registrácia</h2>           <!-- Nadpis registračnej sekcie -->
       
-      <div class="input-group">
-        <input type="email" id="regEmail" placeholder="Email" autocomplete="email">
-        <span class="error-message" id="regEmailError"></span>
-      </div>
-
-      <div class="input-group">
-        <div class="password-wrapper">
-          <input type="password" id="regPass" placeholder="Heslo (min. 8 znakov)" autocomplete="new-password">
-          <button type="button" class="toggle-password" data-target="regPass" aria-label="Zobraziť heslo">
-            <span class="eye-icon">👁</span>
-          </button>
-        </div>
-        <span class="error-message" id="regPassError"></span>
-        <div class="password-strength" id="regPassStrength"></div>
-      </div>
-
-      <div class="input-group">
-        <div class="password-wrapper">
-          <input type="password" id="regPassConfirm" placeholder="Zopakujte heslo" autocomplete="new-password">
-          <button type="button" class="toggle-password" data-target="regPassConfirm" aria-label="Zobraziť heslo">
-            <span class="eye-icon">👁</span>
-          </button>
-        </div>
-        <span class="error-message" id="regPassConfirmError"></span>
-      </div>
-
-      <button id="registerBtn" class="primary-btn">
-        <span class="btn-text">Registrovať</span>
-        <span class="btn-spinner" style="display:none;"></span>
-      </button>
-
-      <p class="switch-auth">
-        Už máte účet? <a href="#" id="showLogin">Prihláste sa</a>
-      </p>
-    </div>
-
-    <!-- Prihlásenie -->
-    <div id="loginSection" style="display:none;">
-      <h2>Prihlásenie</h2>
+      <div class="input-group">      <!-- Skupina pre emailový input a jeho chybovú hlášku -->
+        <input type="email" id="regEmail" placeholder="Email" autocomplete="email">  <!-- Input pre email, s automatickým dopĺňaním -->
+        <span class="error-message" id="regEmailError"></span>  <!-- Element pre zobrazenie chybovej hlášky emailu -->
+      </div>                         <!-- Koniec input-group -->
+      <div class="input-group">      <!-- Skupina pre heslo -->
+        <div class="password-wrapper">  <!-- Wrapper pre heslo a tlačidlo na zobrazenie/skrytie -->
+          <input type="password" id="regPass" placeholder="Heslo (min. 8 znakov)" autocomplete="new-password">  <!-- Input pre heslo -->
+          <button type="button" class="toggle-password" data-target="regPass" aria-label="Zobraziť heslo">  <!-- Tlačidlo na prepnutie viditeľnosti hesla -->
+            <span class="eye-icon">👁</span>  <!-- Ikona oka -->
+          </button>                  <!-- Koniec tlačidla -->
+        </div>                       <!-- Koniec password-wrapper -->
+        <span class="error-message" id="regPassError"></span>  <!-- Chybová hláška pre heslo -->
+        <div class="password-strength" id="regPassStrength"></div>  <!-- Element pre zobrazenie sily hesla -->
+      </div>                         <!-- Koniec input-group -->
+      <div class="input-group">      <!-- Skupina pre potvrdenie hesla -->
+        <div class="password-wrapper">  <!-- Wrapper pre potvrdenie hesla a tlačidlo -->
+          <input type="password" id="regPassConfirm" placeholder="Zopakujte heslo" autocomplete="new-password">  <!-- Input pre potvrdenie hesla -->
+          <button type="button" class="toggle-password" data-target="regPassConfirm" aria-label="Zobraziť heslo">  <!-- Tlačidlo na prepnutie viditeľnosti -->
+            <span class="eye-icon">👁</span>  <!-- Ikona oka -->
+          </button>                  <!-- Koniec tlačidla -->
+        </div>                       <!-- Koniec password-wrapper -->
+        <span class="error-message" id="regPassConfirmError"></span>  <!-- Chybová hláška pre potvrdenie hesla -->
+      </div>                         <!-- Koniec input-group -->
+      <button id="registerBtn" class="primary-btn">  <!-- Hlavné tlačidlo pre registráciu -->
+        <span class="btn-text">Registrovať</span>  <!-- Text tlačidla -->
+        <span class="btn-spinner" style="display:none;"></span>  <!-- Spinner (načítavacia animácia), počiatočne skrytý -->
+      </button>                      <!-- Koniec tlačidla -->
+      <p class="switch-auth">        <!-- Paragraf s odkazom na prepnutie na prihlásenie -->
+        Už máte účet? <a href="#" id="showLogin">Prihláste sa</a>  <!-- Link pre prepnutie na prihlásenie -->
+      </p>                           <!-- Koniec paragrafu -->
+    </div>                           <!-- Koniec registerSection -->
+   
+    <!-- Prihlásenie -->            
+    <div id="loginSection" style="display:none;">  <!-- Sekcia prihlasovacieho formulára, počiatočne skrytá -->
+      <h2>Prihlásenie</h2>           <!-- Nadpis prihlasovacej sekcie -->
       
-      <div class="input-group">
-        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
-        <span class="error-message" id="loginEmailError"></span>
-      </div>
-
-      <div class="input-group">
-        <div class="password-wrapper">
-          <input type="password" id="loginPass" placeholder="Heslo" autocomplete="current-password">
-          <button type="button" class="toggle-password" data-target="loginPass" aria-label="Zobraziť heslo">
-            <span class="eye-icon">👁</span>
-          </button>
-        </div>
-        <span class="error-message" id="loginPassError"></span>
-      </div>
-
-      <button id="loginBtn" class="primary-btn">
-        <span class="btn-text">Prihlásiť</span>
-        <span class="btn-spinner" style="display:none;"></span>
-      </button>
-
-      <button id="resetBtn" class="secondary-btn">Zabudol som heslo</button>
-
-      <p class="switch-auth">
-        Nemáte účet? <a href="#" id="showRegister">Registrujte sa</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- Dashboard -->
-  <div id="dashboard" style="display:none;">
-    <div class="dashboard-header">
-      <p>Prihlásený ako: <b id="userEmail"></b></p>
-      <button id="logoutBtn" class="secondary-btn">Odhlásiť sa</button>
-    </div>
-    <button id="loadDataBtn" class="primary-btn">Načítať merania</button>
-    <div id="output"></div>
-  </div>
-</div>
-
-<script src="app.js"></script>
-</body>
-</html>
+      <div class="input-group">      <!-- Skupina pre emailový input -->
+        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">  <!-- Input pre email pri prihlásení -->
+        <span class="error-message" id="loginEmailError"></span>  <!-- Chybová hláška pre email -->
+      </div>                         <!-- Koniec input-group -->
+      <div class="input-group">      <!-- Skupina pre heslo -->
+        <div class="password-wrapper">  <!-- Wrapper pre heslo a tlačidlo -->
+          <input type="password" id="loginPass" placeholder="Heslo" autocomplete="current-password">  <!-- Input pre heslo, automatické dopĺňanie aktuálneho hesla -->
+          <button type="button" class="toggle-password" data-target="loginPass" aria-label="Zobraziť heslo">  <!-- Tlačidlo na zobrazenie hesla -->
+            <span class="eye-icon">👁</span>  <!-- Ikona oka -->
+          </button>                  <!-- Koniec tlačidla -->
+        </div>                       <!-- Koniec password-wrapper -->
+        <span class="error-message" id="loginPassError"></span>  <!-- Chybová hláška pre heslo -->
+      </div>                         <!-- Koniec input-group -->
+      <button id="loginBtn" class="primary-btn">  <!-- Hlavné tlačidlo pre prihlásenie -->
+        <span class="btn-text">Prihlásiť</span>  <!-- Text tlačidla -->
+        <span class="btn-spinner" style="display:none;"></span>  <!-- Spinner, počiatočne skrytý -->
+      </button>                      <!-- Koniec tlačidla -->
+      <button id="resetBtn" class="secondary-btn">Zabudol som heslo</button>  <!-- Sekundárne tlačidlo pre reset hesla -->
+      <p class="switch-auth">        <!-- Paragraf s odkazom na registráciu -->
+        Nemáte účet? <a href="#" id="showRegister">Registrujte sa</a>  <!-- Link pre prepnutie na registráciu -->
+      </p>                           <!-- Koniec paragrafu -->
+    </div>                           <!-- Koniec loginSection -->
+  </div>                             <!-- Koniec auth sekcie -->
+  
+  <!-- Dashboard -->               
+  <div id="dashboard" style="display:none;">  <!-- Dashboard sekcia, zobrazí sa po prihlásení, počiatočne skrytá -->
+    <div class="dashboard-header">   <!-- Hlavička dashboardu -->
+      <p>Prihlásený ako: <b id="userEmail"></b></p>  <!-- Paragraf zobrazujúci email prihláseného používateľa -->
+      <button id="logoutBtn" class="secondary-btn">Odhlásiť sa</button>  <!-- Tlačidlo pre odhlásenie -->
+    </div>                           <!-- Koniec dashboard-header -->
+    <button id="loadDataBtn" class="primary-btn">Načítať merania</button>  <!-- Tlačidlo pre načítanie nameraných dát zo servera -->
+    <div id="output"></div>          <!-- Kontajner kde sa zobrazia načítané merania -->
+  </div>                             <!-- Koniec dashboard sekcie -->
+</div>                               <!-- Koniec hlavného kontajnera -->
+<script src="app.js"></script>       <!-- Pripojenie externého JavaScript súboru s logikou aplikácie -->
+</body>                              <!-- Koniec tela dokumentu -->
+</html>                              <!-- Koniec HTML dokumentu -->
