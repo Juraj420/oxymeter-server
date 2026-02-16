@@ -1,335 +1,335 @@
-/* ===========================
+/* 
    Základné štýly
-   =========================== */
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  margin: 0;
-  padding: 0;
+    */
+body {                               /* Štýl pre celé telo dokumentu - používa sa na VŠETKÝCH stránkach (index.html, reset.html) */
+  font-family: Arial, sans-serif;    /* Nastavenie fontu na Arial, ak nie je dostupný použije sa náhradný sans-serif font */
+  background: #f4f4f4;               /* Svetlo sivé pozadie celej stránky */
+  margin: 0;                         /* Odstránenie predvoleného okraja okolo stránky */
+  padding: 0;                        /* Odstránenie predvoleného vnútorného rozostupu */
 }
 
-.container {
-  max-width: 500px;
-  margin: 40px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+.container {                         /* Hlavný kontajner - používa sa na VŠETKÝCH stránkach (registrácia, prihlásenie, reset hesla, dashboard) */
+  max-width: 500px;                  /* Maximálna šírka kontajnera 500px (na veľkých obrazovkách nebude širší) */
+  margin: 40px auto;                 /* Vonkajší rozostup 40px hore/dole, auto vľavo/vpravo (vycentrovanie) */
+  background: white;                 /* Biele pozadie kontajnera */
+  padding: 30px;                     /* Vnútorný rozostup 30px zo všetkých strán */
+  border-radius: 10px;               /* Zaoblené rohy s polomerom 10px */
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);  /* Tieň okolo kontajnera (x-offset, y-offset, rozostrenie, farba s priehľadnosťou) */
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #333;
+h1 {                                 /* Nadpis úrovne 1 - používa sa na hlavnej stránke (index.html) pre "🫀Oxymeter" */
+  text-align: center;                /* Vycentrovanie textu */
+  margin-bottom: 30px;               /* Spodný rozostup 30px */
+  color: #333;                       /* Tmavo sivá farba textu */
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #555;
-  font-size: 24px;
+h2 {                                 /* Nadpis úrovne 2 - používa sa v registrácii, prihlásení a na reset hesla stránke */
+  text-align: center;                /* Vycentrovanie textu */
+  margin-bottom: 20px;               /* Spodný rozostup 20px */
+  color: #555;                       /* Stredne sivá farba textu */
+  font-size: 24px;                   /* Veľkosť písma 24px */
 }
 
-/* ===========================
+/* 
    Input groups a chybové hlášky
-   =========================== */
-.input-group {
-  margin-bottom: 15px;
-  position: relative;
+  */
+.input-group {                       /* Skupina inputov - používa sa v registrácii, prihlásení a resete hesla pre zoskupenie inputu s chybovou hláškou */
+  margin-bottom: 15px;               /* Spodný rozostup 15px medzi jednotlivými input groupmi */
+  position: relative;                /* Relatívna pozícia pre absolútne pozicionovanie vnútorných elementov */
 }
 
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  padding-right: 10px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
+input[type="email"],                 /* Štýl pre všetky email inputy - používa sa v registrácii a prihlásení */
+input[type="password"],              /* Štýl pre všetky password inputy - používa sa v registrácii, prihlásení a resete hesla */
+input[type="text"] {                 /* Štýl pre všetky text inputy - používa sa všade kde je potrebný textový vstup */
+  width: 100%;                       /* Šírka 100% od rodiča */
+  padding: 10px;                     /* Vnútorný rozostup 10px zo všetkých strán */
+  padding-right: 10px;               /* Pravý vnútorný rozostup 10px (prepíše sa neskôr pre password-wrapper) */
+  margin: 8px 0;                     /* Vonkajší rozostup 8px hore a dole, 0 vľavo a vpravo */
+  border: 1px solid #ccc;            /* Svetlo sivý border s hrúbkou 1px */
+  border-radius: 5px;                /* Zaoblené rohy s polomerom 5px */
+  font-size: 14px;                   /* Veľkosť písma 14px */
+  transition: border-color 0.3s ease;  /* Plynulá animácia farby borderu po dobu 0.3 sekundy */
+  box-sizing: border-box;            /* Padding a border sú zahrnuté v celkovej šírke (nie pridané navyše) */
 }
 
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="text"]:focus {
-  outline: none;
-  border-color: #28a745;
-  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+input[type="email"]:focus,           /* Štýl pre email input keď je aktívny (kliknuté doň) */
+input[type="password"]:focus,        /* Štýl pre password input keď je aktívny */
+input[type="text"]:focus {           /* Štýl pre text input keď je aktívny */
+  outline: none;                     /* Odstránenie predvoleného outline (modrý rámček v prehliadači) */
+  border-color: #28a745;             /* Zmena farby borderu na zelenú */
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);  /* Zelený tieň okolo inputu (simuluje focus ring) */
 }
 
-.error-message {
-  display: none;
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 3px;
-  margin-left: 5px;
-  animation: fadeIn 0.3s ease;
+.error-message {                     /* Chybové hlášky - používajú sa v registrácii, prihlásení a resete hesla pod inputmi */
+  display: none;                     /* Počiatočne skryté (zobrazuje sa cez JavaScript pri chybe) */
+  color: #e74c3c;                    /* Červená farba textu */
+  font-size: 12px;                   /* Menšia veľkosť písma 12px */
+  margin-top: 3px;                   /* Horný rozostup 3px od inputu */
+  margin-left: 5px;                  /* Ľavý rozostup 5px (mierne odsadenie) */
+  animation: fadeIn 0.3s ease;       /* Plynulé zobrazenie s animáciou fadeIn */
 }
 
-input.error {
-  border-color: #e74c3c !important;
+input.error {                        /* Trieda pridaná k inputu cez JavaScript pri chybe - používa sa všade kde je input s chybou */
+  border-color: #e74c3c !important;  /* Červený border (!important prepíše všetky ostatné štýly) */
 }
 
-/* ===========================
+/* 
    Password wrapper s ikonou oka
-   =========================== */
-.password-wrapper {
-  position: relative;
-  width: 100%;
-  display: block;
+    */
+.password-wrapper {                  /* Wrapper pre password input a tlačidlo s okom - používa sa v registrácii, prihlásení a resete hesla */
+  position: relative;                /* Relatívna pozícia pre absolútne pozicionovanie tlačidla */
+  width: 100%;                       /* Šírka 100% */
+  display: block;                    /* Blokový element (celá šírka) */
 }
 
-.password-wrapper input {
-  width: 100%;
-  padding-right: 50px !important;
-  box-sizing: border-box;
+.password-wrapper input {            /* Input vnútri password-wrapper - používa sa pri všetkých password inputoch */
+  width: 100%;                       /* Šírka 100% */
+  padding-right: 50px !important;    /* Pravý padding 50px pre urobenie miesta pre tlačidlo oka */
+  box-sizing: border-box;            /* Padding zahrnutý v celkovej šírke */
 }
 
-.toggle-password {
-  position: absolute;
-  right: 0;
-  top: 8px;
-  background: transparent !important;
-  border: none !important;
-  cursor: pointer;
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: auto;
-  height: auto;
-  margin: 0;
-  color: #666;
-  transition: opacity 0.2s;
+.toggle-password {                   /* Tlačidlo na zobrazenie/skrytie hesla (ikona oka) - používa sa pri všetkých password inputoch */
+  position: absolute;                /* Absolútna pozícia (relatívne k .password-wrapper) */
+  right: 0;                          /* Pripnuté k pravému okraju */
+  top: 8px;                          /* 8px od vrchu (vycentrovanie vzhľadom na input) */
+  background: transparent !important;  /* Priehľadné pozadie */
+  border: none !important;           /* Žiadny border */
+  cursor: pointer;                   /* Kurzor ruky pri najedení */
+  padding: 10px 12px;                /* Vnútorný rozostup pre väčšiu klikateľnú oblasť */
+  display: flex;                     /* Flexbox pre centrovanie ikony */
+  align-items: center;               /* Vertikálne vycentrovanie */
+  justify-content: center;           /* Horizontálne vycentrovanie */
+  width: auto;                       /* Automatická šírka podľa obsahu */
+  height: auto;                      /* Automatická výška podľa obsahu */
+  margin: 0;                         /* Žiadny margin */
+  color: #666;                       /* Stredne sivá farba ikony */
+  transition: opacity 0.2s;          /* Plynulá zmena priehľadnosti */
 }
 
-.toggle-password:hover {
-  opacity: 0.7;
-  background: transparent !important;
-  transform: none !important;
-  box-shadow: none !important;
+.toggle-password:hover {             /* Tlačidlo oka pri najedení myšou - používa sa pri password inputoch */
+  opacity: 0.7;                      /* Znížená priehľadnosť (70% viditeľnosti) */
+  background: transparent !important;  /* Priehľadné pozadie aj pri hover */
+  transform: none !important;        /* Žiadna transformácia (vypnutie animácie posunu) */
+  box-shadow: none !important;       /* Žiadny tieň */
 }
 
-.toggle-password:active {
-  transform: none !important;
+.toggle-password:active {            /* Tlačidlo oka pri kliknutí - používa sa pri password inputoch */
+  transform: none !important;        /* Žiadna transformácia ani pri kliknutí */
 }
 
-.eye-icon {
-  font-size: 20px;
-  line-height: 1;
-  user-select: none;
-  display: block;
-  pointer-events: none;
+.eye-icon {                          /* Ikona oka (emoji 👁) - používa sa v tlačidle toggle-password */
+  font-size: 20px;                   /* Veľkosť emoji 20px */
+  line-height: 1;                    /* Výška riadku 1 (odstránenie extra medzier) */
+  user-select: none;                 /* Zakázanie označenia textu (emoji) */
+  display: block;                    /* Blokový element */
+  pointer-events: none;              /* Kliknutia prechádzajú cez ikonu na tlačidlo */
 }
 
 /* Keď je heslo viditeľné (active) */
-.toggle-password.active .eye-icon {
-  text-decoration: line-through;
-  color: #999;
+.toggle-password.active .eye-icon {  /* Ikona oka keď je heslo zobrazené - trieda "active" sa pridáva cez JavaScript */
+  text-decoration: line-through;     /* Prečiarknutie ikony (vizuálna indikácia že heslo je viditeľné) */
+  color: #999;                       /* Svetlejšia sivá farba */
 }
 
-/* ===========================
+/*
    Password strength indikátor
-   =========================== */
-.password-strength {
-  font-size: 12px;
-  margin-top: 3px;
-  margin-left: 5px;
-  font-weight: 600;
-  display: none;
+  */
+.password-strength {                 /* Indikátor sily hesla - používa sa IBA pri registrácii pod password inputom */
+  font-size: 12px;                   /* Veľkosť písma 12px */
+  margin-top: 3px;                   /* Horný rozostup 3px */
+  margin-left: 5px;                  /* Ľavý rozostup 5px */
+  font-weight: 600;                  /* Polotučné písmo */
+  display: none;                     /* Počiatočne skryté (zobrazuje sa cez JavaScript pri písaní hesla) */
 }
 
-/* ===========================
+/* 
    Tlačidlá
-   =========================== */
-button {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 15px;
-  transition: all 0.3s ease;
-  position: relative;
+   */
+button {                             /* Všeobecný štýl pre všetky tlačidlá - používa sa na VŠETKÝCH stránkach */
+  width: 100%;                       /* Šírka 100% */
+  padding: 12px;                     /* Vnútorný rozostup 12px */
+  margin: 10px 0;                    /* Vonkajší rozostup 10px hore/dole */
+  background: #28a745;               /* Zelené pozadie (základná farba) */
+  color: white;                      /* Biela farba textu */
+  border: none;                      /* Žiadny border */
+  border-radius: 5px;                /* Zaoblené rohy 5px */
+  font-weight: bold;                 /* Tučné písmo */
+  cursor: pointer;                   /* Kurzor ruky */
+  font-size: 15px;                   /* Veľkosť písma 15px */
+  transition: all 0.3s ease;         /* Plynulá animácia všetkých zmien */
+  position: relative;                /* Relatívna pozícia pre absolútne pozicionovanie vnútorných elementov */
 }
 
-button:hover {
-  background: #218838;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+button:hover {                       /* Tlačidlo pri najedení myšou - VŠETKY tlačidlá */
+  background: #218838;               /* Tmavšia zelená */
+  transform: translateY(-1px);       /* Posun o 1px hore (efekt zdvihnutia) */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);  /* Tieň pod tlačidlom */
 }
 
-button:active {
-  transform: translateY(0);
+button:active {                      /* Tlačidlo pri kliknutí - VŠETKY tlačidlá */
+  transform: translateY(0);          /* Návrat na pôvodnú pozíciu */
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+button:disabled {                    /* Deaktivované tlačidlo - používa sa počas načítavania (loading state) */
+  opacity: 0.6;                      /* Znížená priehľadnosť (60%) */
+  cursor: not-allowed;               /* Kurzor "zakázané" */
+  transform: none;                   /* Žiadna transformácia */
 }
 
 /* Primary button (zelené) */
-.primary-btn {
-  background: #28a745;
+.primary-btn {                       /* Primárne tlačidlá - používajú sa pre hlavné akcie (Registrovať, Prihlásiť, Načítať merania) */
+  background: #28a745;               /* Zelené pozadie */
 }
 
-.primary-btn:hover {
-  background: #218838;
+.primary-btn:hover {                 /* Primárne tlačidlo pri hover - hlavné akcie */
+  background: #218838;               /* Tmavšia zelená */
 }
 
 /* Secondary button (modré) */
-.secondary-btn {
-  background: #007bff;
+.secondary-btn {                     /* Sekundárne tlačidlá - používajú sa pre vedľajšie akcie (Odhlásiť sa, Zabudol som heslo) */
+  background: #007bff;               /* Modré pozadie */
 }
 
-.secondary-btn:hover {
-  background: #0069d9;
+.secondary-btn:hover {               /* Sekundárne tlačidlo pri hover - vedľajšie akcie */
+  background: #0069d9;               /* Tmavšia modrá */
 }
 
 /* Loading spinner v tlačidle */
-.btn-spinner {
-  font-size: 16px;
-  display: none;
+.btn-spinner {                       /* Spinner (načítavacia animácia) v tlačidle - používa sa v registrácii a prihlásení počas requestu */
+  font-size: 16px;                   /* Veľkosť 16px */
+  display: none;                     /* Počiatočne skryté (zobrazuje sa cez JavaScript pri loading state) */
 }
 
-/* ===========================
+/* 
    Prepínanie medzi registráciou/prihlásením
-   =========================== */
-.switch-auth {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #666;
+   */
+.switch-auth {                       /* Sekcia s odkazmi na prepnutie medzi registráciou/prihlásením - používa sa v registrácii, prihlásení a resete hesla */
+  text-align: center;                /* Vycentrovanie textu */
+  margin-top: 20px;                  /* Horný rozostup 20px */
+  margin-bottom: 10px;               /* Spodný rozostup 10px */
+  font-size: 14px;                   /* Veľkosť písma 14px */
+  color: #666;                       /* Stredne sivá farba textu */
 }
 
-.switch-auth a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s;
+.switch-auth a {                     /* Odkazy v switch-auth sekcii - "Prihláste sa", "Registrujte sa", "← Späť na prihlásenie" */
+  color: #007bff;                    /* Modrá farba odkazu */
+  text-decoration: none;             /* Žiadne podčiarknutie */
+  font-weight: 600;                  /* Polotučné písmo */
+  transition: color 0.2s;            /* Plynulá zmena farby */
 }
 
-.switch-auth a:hover {
-  color: #0056b3;
-  text-decoration: underline;
+.switch-auth a:hover {               /* Odkaz v switch-auth pri hover - všetky navigačné odkazy */
+  color: #0056b3;                    /* Tmavšia modrá */
+  text-decoration: underline;        /* Podčiarknutie pri hover */
 }
 
-/* ===========================
+/* 
    Dashboard
-   =========================== */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
+    */
+.dashboard-header {                  /* Hlavička dashboardu - používa sa IBA v dashboarde po prihlásení */
+  display: flex;                     /* Flexbox layout */
+  justify-content: space-between;    /* Rozloženie elementov - jeden vľavo, druhý vpravo */
+  align-items: center;               /* Vertikálne vycentrovanie */
+  margin-bottom: 20px;               /* Spodný rozostup 20px */
+  padding: 15px;                     /* Vnútorný rozostup 15px */
+  background: #f8f9fa;               /* Svetlo sivé pozadie */
+  border-radius: 8px;                /* Zaoblené rohy 8px */
 }
 
-.dashboard-header p {
-  margin: 0;
-  font-size: 14px;
-  color: #333;
+.dashboard-header p {                /* Paragraf v dashboard-header - zobrazuje "Prihlásený ako: email" */
+  margin: 0;                         /* Žiadny margin */
+  font-size: 14px;                   /* Veľkosť písma 14px */
+  color: #333;                       /* Tmavo sivá farba */
 }
 
-.dashboard-header button {
-  width: auto;
-  padding: 8px 16px;
-  margin: 0;
-  font-size: 14px;
+.dashboard-header button {           /* Tlačidlo v dashboard-header - tlačidlo "Odhlásiť sa" */
+  width: auto;                       /* Automatická šírka podľa obsahu (nie 100%) */
+  padding: 8px 16px;                 /* Menší padding (kompaktnejšie tlačidlo) */
+  margin: 0;                         /* Žiadny margin */
+  font-size: 14px;                   /* Menšia veľkosť písma 14px */
 }
 
-#dashboard p {
-  font-size: 14px;
-  margin-bottom: 10px;
+#dashboard p {                       /* Paragrafy v dashboarde - používajú sa pre info texty */
+  font-size: 14px;                   /* Veľkosť písma 14px */
+  margin-bottom: 10px;               /* Spodný rozostup 10px */
 }
 
-/* ===========================
+/*
    Output - merania
-   =========================== */
-#output {
-  margin-top: 20px;
+*/
+#output {                            /* Kontajner pre výpis nameraných dát - používa sa IBA v dashboarde */
+  margin-top: 20px;                  /* Horný rozostup 20px */
 }
 
-#output .measurement {
-  background: #e9f7ef;
-  border: 1px solid #c3e6cb;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  animation: fadeIn 0.3s ease;
+#output .measurement {               /* Jednotlivé meranie v output sekcii - používa sa v dashboarde pre každé jedno meranie (BPM, SpO2) */
+  background: #e9f7ef;               /* Svetlo zelené pozadie */
+  border: 1px solid #c3e6cb;         /* Zelený border */
+  padding: 15px;                     /* Vnútorný rozostup 15px */
+  margin: 10px 0;                    /* Vonkajší rozostup 10px hore/dole */
+  border-radius: 5px;                /* Zaoblené rohy 5px */
+  display: flex;                     /* Flexbox layout */
+  justify-content: space-between;    /* Rozloženie - values vľavo, time vpravo */
+  animation: fadeIn 0.3s ease;       /* Plynulé zobrazenie s animáciou */
 }
 
-.values, .time {
-  font-size: 14px;
-  line-height: 1.6;
+.values, .time {                     /* Hodnoty a čas v meraní - values zobrazuje BPM a SpO2, time zobrazuje LED a čas */
+  font-size: 14px;                   /* Veľkosť písma 14px */
+  line-height: 1.6;                  /* Výška riadku 1.6 (väčší rozostup medzi riadkami) */
 }
 
-.values b, .time b {
-  color: #333;
+.values b, .time b {                 /* Tučné texty v values a time - BPM, SpO2, LED hodnoty */
+  color: #333;                       /* Tmavo sivá farba */
 }
 
-/* ===========================
+/* 
    Animácie
-   =========================== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+ */
+@keyframes fadeIn {                  /* Definícia animácie fadeIn - používa sa pre error-message, measurement a sekcie */
+  from {                             /* Začiatok animácie */
+    opacity: 0;                      /* Neviditeľné (0% priehľadnosť) */
+    transform: translateY(-10px);    /* Posunuté o 10px hore */
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  to {                               /* Koniec animácie */
+    opacity: 1;                      /* Plne viditeľné (100% priehľadnosť) */
+    transform: translateY(0);        /* Na pôvodnej pozícii */
   }
 }
 
-/* ===========================
+/*
    Responzívny dizajn
-   =========================== */
-@media (max-width: 480px) {
-  .container {
-    margin: 20px;
-    padding: 20px;
+   */
+@media (max-width: 480px) {          /* Pravidlá pre mobilné zariadenia (šírka obrazovky max 480px) - používa sa na VŠETKÝCH stránkach */
+  .container {                       /* Kontajner na mobiloch */
+    margin: 20px;                    /* Menší margin 20px (namiesto 40px) */
+    padding: 20px;                   /* Menší padding 20px (namiesto 30px) */
   }
   
-  .password-wrapper input {
-    padding-right: 45px !important;
+  .password-wrapper input {          /* Password input na mobiloch */
+    padding-right: 45px !important;  /* Menší pravý padding pre oko (namiesto 50px) */
   }
   
-  .toggle-password {
-    right: 0;
+  .toggle-password {                 /* Tlačidlo oka na mobiloch */
+    right: 0;                        /* Pripnuté k pravému okraju */
   }
   
-  .eye-icon {
-    font-size: 18px;
+  .eye-icon {                        /* Ikona oka na mobiloch */
+    font-size: 18px;                 /* Menšia veľkosť 18px (namiesto 20px) */
   }
   
-  .dashboard-header {
-    flex-direction: column;
-    gap: 10px;
+  .dashboard-header {                /* Dashboard header na mobiloch */
+    flex-direction: column;          /* Vertikálne rozloženie (pod sebou namiesto vedľa seba) */
+    gap: 10px;                       /* Medzera 10px medzi elementmi */
   }
   
-  .dashboard-header button {
-    width: 100%;
+  .dashboard-header button {         /* Tlačidlo v dashboard header na mobiloch */
+    width: 100%;                     /* Plná šírka (namiesto auto) */
   }
 }
 
-/* ===========================
+/* 
    Hidden sections
-   =========================== */
-#registerSection,
-#loginSection {
-  animation: fadeIn 0.4s ease;
+  */
+#registerSection,                    /* Registračná sekcia - používa sa v index.html */
+#loginSection {                      /* Prihlasovacia sekcia - používa sa v index.html */
+  animation: fadeIn 0.4s ease;       /* Plynulé zobrazenie pri prepínaní medzi registráciou a prihlásením */
 }
