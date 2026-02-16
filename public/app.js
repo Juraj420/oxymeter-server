@@ -6,9 +6,7 @@ const dashboard = document.getElementById("dashboard");  // Získanie elementu s
 const output = document.getElementById("output");     // Získanie elementu kde sa zobrazia namerané dáta
 const userEmailSpan = document.getElementById("userEmail");  // Získanie elementu pre zobrazenie emailu používateľa
 
-// =======================
 // Helper funkcie
-// =======================
 function isValidEmail(email) {       // Funkcia pre validáciu emailovej adresy
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Regulárny výraz pre kontrolu formátu emailu
   return regex.test(email);          // Vráti true ak email zodpovedá formátu, inak false
@@ -74,9 +72,8 @@ function setButtonLoading(buttonId, isLoading) {  // Funkcia pre zobrazenie load
     if (spinnerSpan) spinnerSpan.style.display = "none";  // Skry spinner
   }
 }
-// =======================
+
 // Prepínanie medzi registráciou a prihlásením
-// =======================
 const showLoginBtn = document.getElementById("showLogin");  // Získanie tlačidla "Už máte účet?"
 if (showLoginBtn) {                  // Ak tlačidlo existuje
   showLoginBtn.onclick = (e) => {    // Pri kliknutí na tlačidlo
@@ -97,9 +94,7 @@ if (showRegisterBtn) {               // Ak tlačidlo existuje
   };
 }
 
-// =======================
 // Zobrazenie/skrytie hesla
-// =======================
 document.querySelectorAll(".toggle-password").forEach(button => {  // Pre každé tlačidlo s triedou "toggle-password" (oko na zobrazenie hesla)
   button.onclick = () => {           // Pri kliknutí na tlačidlo
     const targetId = button.getAttribute("data-target");  // Získaj ID inputu ktorý má prepnúť
@@ -120,9 +115,7 @@ document.querySelectorAll(".toggle-password").forEach(button => {  // Pre každ�
   };
 });
 
-// =======================
 // Indikátor sily hesla pri registrácii
-// =======================
 const regPassInput = document.getElementById("regPass");  // Získanie input poľa pre heslo pri registrácii
 if (regPassInput) {                  // Ak existuje
   regPassInput.oninput = (e) => {    // Pri každej zmene v inpute (každé napísané písmeno)
@@ -144,9 +137,7 @@ if (regPassInput) {                  // Ak existuje
   };
 }
 
-// =======================
 // Registrácia
-// =======================
 const registerBtn = document.getElementById("registerBtn");  // Získanie tlačidla "Zaregistrovať sa"
 if (registerBtn) {                   // Ak tlačidlo existuje
   registerBtn.onclick = async () => {  // Pri kliknutí na tlačidlo (async = môže čakať na fetch)
@@ -223,9 +214,7 @@ if (registerBtn) {                   // Ak tlačidlo existuje
   };
 }
 
-// =======================
 // Prihlásenie
-// =======================
 const loginBtn = document.getElementById("loginBtn");  // Získanie tlačidla "Prihlásiť sa"
 if (loginBtn) {                      // Ak tlačidlo existuje
   loginBtn.onclick = async () => {   // Pri kliknutí na tlačidlo
@@ -282,9 +271,7 @@ if (loginBtn) {                      // Ak tlačidlo existuje
   };
 }
 
-// =======================
 // Odhlásenie
-// =======================
 const logoutBtn = document.getElementById("logoutBtn");  // Získanie tlačidla "Odhlásiť sa"
 if (logoutBtn) {                     // Ak tlačidlo existuje
   logoutBtn.onclick = () => {        // Pri kliknutí
@@ -300,10 +287,7 @@ if (logoutBtn) {                     // Ak tlačidlo existuje
   };
 }
 
-
-// =======================
 // Načítanie dát používateľa
-// =======================
 const loadDataBtn = document.getElementById("loadDataBtn");  // Získanie tlačidla "Načítať moje merania"
 if (loadDataBtn) {                   // Ak tlačidlo existuje
   loadDataBtn.onclick = async () => {  // Pri kliknutí
@@ -329,7 +313,7 @@ if (loadDataBtn) {                   // Ak tlačidlo existuje
         return;                      // Ukonči funkciu
       }
       
-      // Funkcia pre opravu formátu času
+      // Funkcie pre daáta
       function fixTime(datetimeString) {  // Funkcia pre konverziu času zo servera na čitateľný formát
         if (!datetimeString) return "Neznámy čas";  // Ak je čas prázdny
         if (typeof datetimeString === "string" && datetimeString.includes(" ")) {  // Ak obsahuje medzeru namiesto "T"
@@ -373,10 +357,7 @@ if (loadDataBtn) {                   // Ak tlačidlo existuje
   };
 }
 
-
-// =======================
 // Reset hesla (tlačidlo na prihlasovacej stránke)
-// =======================
 const resetBtn = document.getElementById("resetBtn");  // Získanie tlačidla "Zabudli ste heslo?"
 if (resetBtn) {                      // Ak tlačidlo existuje
   resetBtn.onclick = async () => {   // Pri kliknutí
@@ -417,9 +398,7 @@ if (resetBtn) {                      // Ak tlačidlo existuje
   };
 }
 
-// =======================
 // Reset hesla stránka - funkcie
-// =======================
 function showErrorReset(message) {   // Funkcia pre zobrazenie chyby na reset hesla stránke
   const errorSpan = document.getElementById("passwordError");  // Získaj element pre chybu
   const input = document.getElementById("newPass");  // Získaj input pre nové heslo
