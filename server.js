@@ -90,7 +90,7 @@ app.post("/api/forgot-password", async (req, res) => {  // POST endpoint pre ži
               },
               to: [{ email }],         // Príjemca emailu (používateľ ktorý požiadal o reset)
               subject: "Obnova hesla – Oxymeter",  // Predmet emailu
-              htmlContent: `           // HTML obsah emailu
+              htmlContent: `           
                 <h2>Reset hesla</h2>
                 <p>Klikni na tento link pre zmenu hesla:</p>
                 <a href="${resetLink}">${resetLink}</a>
