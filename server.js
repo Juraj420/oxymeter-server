@@ -154,7 +154,8 @@ app.get("/api/my-data", (req, res) => {  // GET endpoint pre načítanie nameran
     return res.status(401).json({ success: false, message: "Invalid token" });  // Vráť chybu 401
   }
 
-  const sql = `                        // SQL query pre získanie meraní používateľa
+  
+  const sql = `                    
     SELECT m.*                         
     FROM measurements m                
     JOIN devices d ON m.device_id = d.id  
