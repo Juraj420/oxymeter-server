@@ -337,7 +337,7 @@ if (loadDataBtn) {                   // Ak tlačidlo existuje
         const formattedTime = fixTime(m.created_at);  // Preformátuj čas
         const div = document.createElement("div");    // Vytvor nový div element
         div.className = "measurement";  // Pridaj triedu "measurement"
-        div.innerHTML = `            // Nastav HTML obsah divu
+        div.innerHTML = `            
           <div class="values">       
             ❤️ <b>${m.bpm}</b> BPM<br>        <!-- Zobraz BPM -->
             🫁 <b>${m.spo2}</b> %              <!-- Zobraz SpO2 -->
