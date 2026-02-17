@@ -333,3 +333,12 @@ button:disabled {                    /* Deaktivované tlačidlo - používa sa p
 #loginSection {                      /* Prihlasovacia sekcia - používa sa v index.html */
   animation: fadeIn 0.4s ease;       /* Plynulé zobrazenie pri prepínaní medzi registráciou a prihlásením */
 }
+
+input[type="password"]::-ms-reveal,    /* Skryje ikonu oka v Microsoft Edge/IE */
+input[type="password"]::-ms-clear {    /* Skryje tlačidlo na vymazanie textu v Edge/IE */
+  display: none;                       /* Nastaví element na neviditeľný */
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {  /* Skryje tlačidlo pre automatické vyplnenie hesla v Chrome/Safari */
+  display: none;                       /* Nastaví element na neviditeľný */
+}
