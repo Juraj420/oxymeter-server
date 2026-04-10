@@ -14,18 +14,25 @@ app.use(express.static("public"));   // Nastavenie statického priečinka "publi
 app.use(cors());                     // Povolenie CORS - umožňuje requesty z iných domén (napr. z frontendu)
 app.use(express.json({ limit: "1mb" }));  // Middleware pre parsovanie JSON requestov s limitom veľkosti 1MB
 
-// MySQL pripojenie
-const db = mysql.createConnection({  // Vytvorenie pripojenia k MySQL databáze
-  host: process.env.DB_HOST,         // Adresa databázového servera (z .env súboru)
-  user: process.env.DB_USER,         // Používateľské meno pre databázu (z .env súboru)
-  password: process.env.DB_PASSWORD, // Heslo pre databázu (z .env súboru)
-  database: process.env.DB_NAME,     // Názov databázy (z .env súboru)
-  port: process.env.DB_PORT          // Port databázy (z .env súboru)
+// MySQL connection pool - automaticky obnovuje spadnuté spojenia
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  waitForConnections: true,  // Čakaj na voľné spojenie ak je pool plný
+  connectionLimit: 5,        // Max 5 súčasných spojení (free tier limit)
+  queueLimit: 0,             // Neobmedzená fronta čakajúcich requestov
+  enableKeepAlive: true,     // Udržiavaj spojenia živé
+  keepAliveInitialDelay: 0   // Začni keepalive hneď
 });
 
-db.connect(err => {                  // Pokus o pripojenie k databáze
-  if (err) return console.error("MySQL error:", err);  // Ak nastala chyba, vypíš ju do konzoly
-  console.log("MySQL connected");    // Ak pripojenie prebehlo úspešne, vypíš hlášku
+// Test spojenia pri štarte servera
+db.getConnection((err, connection) => {
+  if (err) return console.error("MySQL error:", err);
+  console.log("MySQL connected");
+  connection.release(); // Vrať spojenie späť do poolu
 });
 
 // Registrácia
@@ -154,7 +161,6 @@ app.get("/api/my-data", (req, res) => {  // GET endpoint pre načítanie nameran
     return res.status(401).json({ success: false, message: "Invalid token" });  // Vráť chybu 401
   }
 
-  
   const sql = `                    
     SELECT m.*                         
     FROM measurements m                
@@ -204,7 +210,7 @@ app.post("/api/send-data", (req, res) => {  // POST endpoint pre prijímanie dá
     if (!user_id) return res.status(400).json({ success: false, message: "Zariadenie nie je priradené žiadnemu používateľovi" });  // Ak zariadenie nie je priradené nikomu, vráť chybu
 
     db.query(                          // INSERT query pre uloženie merania do databázy
-   "INSERT INTO measurements (device_id, bpm, spo2, led, created_at) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?, NOW())",  // Vloženie merania s aktuálnym časom (NOW())
+      "INSERT INTO measurements (device_id, bpm, spo2, led, created_at) VALUES ((SELECT id FROM devices WHERE device_uid = ?), ?, ?, ?, NOW())",  // Vloženie merania s aktuálnym časom (NOW())
       [device_uid, bpm, spo2, led],    // Parametre: UID zariadenia (pre získanie device_id), BPM, SpO2, LED
       err2 => {                        // Callback
         if (err2) return res.status(500).json({ success: false, message: "Chyba pri ukladaní merania" });  // Chyba pri ukladaní
