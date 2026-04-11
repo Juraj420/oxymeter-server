@@ -313,7 +313,7 @@ if (loadDataBtn) {                   // Ak tlačidlo existuje
         return;                      // Ukonči funkciu
       }
       
-      // Funkcie pre daáta
+      // Funkcie pre dáta
       function fixTime(datetimeString) {  // Funkcia pre konverziu času zo servera na čitateľný formát
         if (!datetimeString) return "Neznámy čas";  // Ak je čas prázdny
         if (typeof datetimeString === "string" && datetimeString.includes(" ")) {  // Ak obsahuje medzeru namiesto "T"
@@ -343,7 +343,6 @@ if (loadDataBtn) {                   // Ak tlačidlo existuje
             🫁 <b>${m.spo2}</b> %              <!-- Zobraz SpO2 -->
           </div>
           <div class="time">
-            💡 LED ${m.led}<br>                <!-- Zobraz LED intenzitu -->
             ⏱ ${formattedTime}                 <!-- Zobraz čas merania -->
           </div>
         `;
