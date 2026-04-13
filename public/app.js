@@ -6,7 +6,6 @@ const dashboard = document.getElementById("dashboard");
 const output = document.getElementById("output");
 const userEmailSpan = document.getElementById("userEmail");
 
-// Helper funkcie
 function isValidEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
@@ -57,10 +56,8 @@ function clearErrors() {
 function setButtonLoading(buttonId, isLoading) {
   const button = document.getElementById(buttonId);
   if (!button) return;
-  
   const textSpan = button.querySelector(".btn-text");
   const spinnerSpan = button.querySelector(".btn-spinner");
-  
   if (isLoading) {
     button.disabled = true;
     if (textSpan) textSpan.style.display = "none";
@@ -69,6 +66,29 @@ function setButtonLoading(buttonId, isLoading) {
     button.disabled = false;
     if (textSpan) textSpan.style.display = "inline";
     if (spinnerSpan) spinnerSpan.style.display = "none";
+  }
+}
+
+// Kontrola či má používateľ zariadenie
+async function checkUserDevice() {
+  const deviceSection = document.getElementById("deviceSection");
+  const measurementsSection = document.querySelector(".measurements-section");
+
+  try {
+    const res = await fetch(`${API}/api/my-devices`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.hasDevice) {
+      deviceSection.style.display = "none";
+      measurementsSection.style.display = "block";
+    } else {
+      deviceSection.style.display = "block";
+      measurementsSection.style.display = "none";
+    }
+  } catch (err) {
+    console.error("Chyba pri kontrole zariadenia:", err);
   }
 }
 
@@ -99,7 +119,6 @@ document.querySelectorAll(".toggle-password").forEach(button => {
     const targetId = button.getAttribute("data-target");
     const input = document.getElementById(targetId);
     const icon = button.querySelector(".eye-icon");
-    
     if (input && icon) {
       if (input.type === "password") {
         input.type = "text";
@@ -114,21 +133,18 @@ document.querySelectorAll(".toggle-password").forEach(button => {
   };
 });
 
-// Indikátor sily hesla pri registrácii
+// Indikátor sily hesla
 const regPassInput = document.getElementById("regPass");
 if (regPassInput) {
   regPassInput.oninput = (e) => {
     const password = e.target.value;
     const strengthDiv = document.getElementById("regPassStrength");
-    
     if (!strengthDiv) return;
-    
     if (password.length === 0) {
       strengthDiv.textContent = "";
       strengthDiv.style.display = "none";
       return;
     }
-    
     const strength = getPasswordStrength(password);
     strengthDiv.textContent = `Sila hesla: ${strength.text}`;
     strengthDiv.style.color = strength.color;
@@ -141,39 +157,21 @@ const registerBtn = document.getElementById("registerBtn");
 if (registerBtn) {
   registerBtn.onclick = async () => {
     clearErrors();
-    
     const email = document.getElementById("regEmail").value.trim();
     const password = document.getElementById("regPass").value.trim();
     const passwordConfirm = document.getElementById("regPassConfirm").value.trim();
-    
     let hasError = false;
-    
-    if (!email) {
-      showError("regEmail", "Email je povinný");
-      hasError = true;
-    } else if (!isValidEmail(email)) {
-      showError("regEmail", "Neplatný formát emailu");
-      hasError = true;
-    }
 
-    if (!password) {
-      showError("regPass", "Heslo je povinné");
-      hasError = true;
-    } else if (!isValidPassword(password)) {
-      showError("regPass", "Heslo musí mať minimálne 8 znakov");
-      hasError = true;
-    }
+    if (!email) { showError("regEmail", "Email je povinný"); hasError = true; }
+    else if (!isValidEmail(email)) { showError("regEmail", "Neplatný formát emailu"); hasError = true; }
 
-    if (!passwordConfirm) {
-      showError("regPassConfirm", "Zopakujte heslo");
-      hasError = true;
-    } else if (password !== passwordConfirm) {
-      showError("regPassConfirm", "Heslá sa nezhodujú");
-      hasError = true;
-    }
+    if (!password) { showError("regPass", "Heslo je povinné"); hasError = true; }
+    else if (!isValidPassword(password)) { showError("regPass", "Heslo musí mať minimálne 8 znakov"); hasError = true; }
+
+    if (!passwordConfirm) { showError("regPassConfirm", "Zopakujte heslo"); hasError = true; }
+    else if (password !== passwordConfirm) { showError("regPassConfirm", "Heslá sa nezhodujú"); hasError = true; }
 
     if (hasError) return;
-
     setButtonLoading("registerBtn", true);
 
     try {
@@ -182,25 +180,16 @@ if (registerBtn) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
-      
-      if (!res.ok) {
-        const text = await res.text();
-        showError("regEmail", text);
-        return;
-      }
-      
+      if (!res.ok) { const text = await res.text(); showError("regEmail", text); return; }
       alert("Registrácia úspešná! Teraz sa môžete prihlásiť.");
-      
       document.getElementById("registerSection").style.display = "none";
       document.getElementById("loginSection").style.display = "block";
       document.getElementById("loginEmail").value = email;
-      
       document.getElementById("regEmail").value = "";
       document.getElementById("regPass").value = "";
       document.getElementById("regPassConfirm").value = "";
       const strengthDiv = document.getElementById("regPassStrength");
       if (strengthDiv) strengthDiv.style.display = "none";
-      
     } catch (err) {
       console.error("Chyba pri registrácii:", err);
       showError("regEmail", "Chyba pri registrácii. Skúste znova.");
@@ -215,49 +204,30 @@ const loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
   loginBtn.onclick = async () => {
     clearErrors();
-    
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPass").value.trim();
-    
     let hasError = false;
-    
-    if (!email) {
-      showError("loginEmail", "Email je povinný");
-      hasError = true;
-    } else if (!isValidEmail(email)) {
-      showError("loginEmail", "Neplatný formát emailu");
-      hasError = true;
-    }
 
-    if (!password) {
-      showError("loginPass", "Heslo je povinné");
-      hasError = true;
-    }
-    
+    if (!email) { showError("loginEmail", "Email je povinný"); hasError = true; }
+    else if (!isValidEmail(email)) { showError("loginEmail", "Neplatný formát emailu"); hasError = true; }
+    if (!password) { showError("loginPass", "Heslo je povinné"); hasError = true; }
     if (hasError) return;
-    
+
     setButtonLoading("loginBtn", true);
-    
+
     try {
       const res = await fetch(`${API}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
-      
-      if (!res.ok) {
-        const text = await res.text();
-        showError("loginPass", text);
-        return;
-      }
-      
+      if (!res.ok) { const text = await res.text(); showError("loginPass", text); return; }
       const data = await res.json();
       token = data.token;
       userEmailSpan.textContent = email;
-      
       authDiv.style.display = "none";
       dashboard.style.display = "block";
-      
+      checkUserDevice(); // Skontroluj či má zariadenie
     } catch (err) {
       console.error("Chyba pri prihlasovaní:", err);
       showError("loginPass", "Chyba pri prihlasovaní. Skúste znova.");
@@ -275,12 +245,9 @@ if (logoutBtn) {
     authDiv.style.display = "block";
     dashboard.style.display = "none";
     output.innerHTML = "";
-    
     document.getElementById("loginEmail").value = "";
     document.getElementById("loginPass").value = "";
     clearErrors();
-
-    // Vymaž aj device sekciu
     const deviceUidInput = document.getElementById("deviceUid");
     const deviceMsg = document.getElementById("deviceMsg");
     if (deviceUidInput) deviceUidInput.value = "";
@@ -288,32 +255,19 @@ if (logoutBtn) {
   };
 }
 
-// Načítanie dát používateľa
+// Načítanie meraní
 const loadDataBtn = document.getElementById("loadDataBtn");
 if (loadDataBtn) {
   loadDataBtn.onclick = async () => {
     output.innerHTML = "<p>Načítavam...</p>";
-    
     try {
       const res = await fetch(`${API}/api/my-data`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
-      if (!res.ok) {
-        const text = await res.text();
-        output.innerHTML = `<p style="color: #e74c3c;">❌ ${text}</p>`;
-        return;
-      }
-      
+      if (!res.ok) { const text = await res.text(); output.innerHTML = `<p style="color:#e74c3c;">❌ ${text}</p>`; return; }
       const data = await res.json();
-      
-      if (data.length === 0) {
-        output.innerHTML = "<p>Žiadne merania</p>";
-        return;
-      }
-      
+      if (data.length === 0) { output.innerHTML = "<p>Žiadne merania</p>"; return; }
+
       function fixTime(datetimeString) {
         if (!datetimeString) return "Neznámy čas";
         if (typeof datetimeString === "string" && datetimeString.includes(" ")) {
@@ -321,37 +275,22 @@ if (loadDataBtn) {
         }
         const date = new Date(datetimeString);
         if (isNaN(date.getTime())) return "Neplatný dátum";
-        return date.toLocaleString("sk-SK", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        });
+        return date.toLocaleString("sk-SK", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
       }
-      
+
       output.innerHTML = "";
-      
       data.forEach(m => {
-        const formattedTime = fixTime(m.created_at);
         const div = document.createElement("div");
         div.className = "measurement";
         div.innerHTML = `
-          <div class="values">
-            ❤️ <b>${m.bpm}</b> BPM<br>
-            🫁 <b>${m.spo2}</b> %
-          </div>
-          <div class="time">
-            ⏱ ${formattedTime}
-          </div>
+          <div class="values">❤️ <b>${m.bpm}</b> BPM<br>🫁 <b>${m.spo2}</b> %</div>
+          <div class="time">⏱ ${fixTime(m.created_at)}</div>
         `;
         output.appendChild(div);
       });
-      
     } catch (err) {
       console.error("Chyba pri načítaní dát:", err);
-      output.innerHTML = `<p style="color: #e74c3c;">❌ Chyba pri načítaní dát</p>`;
+      output.innerHTML = `<p style="color:#e74c3c;">❌ Chyba pri načítaní dát</p>`;
     }
   };
 }
@@ -362,15 +301,10 @@ if (assignDeviceBtn) {
   assignDeviceBtn.onclick = async () => {
     const device_uid = document.getElementById("deviceUid").value.trim();
     const deviceMsg = document.getElementById("deviceMsg");
-
-    // Vymaž predošlú hlášku a chybu
     deviceMsg.textContent = "";
     showError("deviceUid", "");
 
-    if (!device_uid) {
-      showError("deviceUid", "Zadaj Device UID zariadenia");
-      return;
-    }
+    if (!device_uid) { showError("deviceUid", "Zadaj Device UID zariadenia"); return; }
 
     setButtonLoading("assignDeviceBtn", true);
 
@@ -383,13 +317,17 @@ if (assignDeviceBtn) {
         },
         body: JSON.stringify({ device_uid })
       });
-
       const data = await res.json();
 
       if (res.ok) {
-        deviceMsg.textContent = "✅ Zariadenie úspešne priradené k vášmu účtu!";
+        deviceMsg.textContent = "Zariadenie úspešne priradené k vášmu účtu!";
         deviceMsg.style.color = "#27ae60";
         document.getElementById("deviceUid").value = "";
+        // Po 1.5 sekundách skry pridávanie a zobraz merania
+        setTimeout(() => {
+          document.getElementById("deviceSection").style.display = "none";
+          document.querySelector(".measurements-section").style.display = "block";
+        }, 1500);
       } else {
         deviceMsg.textContent = "❌ " + (data.message || "Nastala chyba");
         deviceMsg.style.color = "#e74c3c";
@@ -404,40 +342,27 @@ if (assignDeviceBtn) {
   };
 }
 
-// Reset hesla (tlačidlo na prihlasovacej stránke)
+// Reset hesla
 const resetBtn = document.getElementById("resetBtn");
 if (resetBtn) {
   resetBtn.onclick = async () => {
     const email = prompt("Zadaj svoj email pre reset hesla:");
     if (!email) return;
-    
-    if (!isValidEmail(email.trim())) {
-      alert("Neplatný formát emailu");
-      return;
-    }
-    
+    if (!isValidEmail(email.trim())) { alert("Neplatný formát emailu"); return; }
     try {
       const res = await fetch(`${API}/api/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() })
       });
-      
-      if (!res.ok) {
-        const text = await res.text();
-        alert(`${text}`);
-        return;
-      }
-      
+      if (!res.ok) { const text = await res.text(); alert(`${text}`); return; }
       const data = await res.json();
-      
       if (data.success) {
         alert("Link na reset hesla bol odoslaný.");
         if (data.link) window.open(data.link, "_blank");
       } else {
         alert("Nepodarilo sa vygenerovať reset link.");
       }
-      
     } catch (err) {
       console.error("Chyba pri žiadosti o reset hesla:", err);
       alert("Chyba pri žiadosti o reset hesla");
@@ -445,24 +370,18 @@ if (resetBtn) {
   };
 }
 
-// Reset hesla stránka - funkcie
+// Reset hesla stránka
 function showErrorReset(message) {
   const errorSpan = document.getElementById("passwordError");
   const input = document.getElementById("newPass");
-  
   if (errorSpan && input) {
     errorSpan.textContent = message;
     errorSpan.style.display = "block";
     input.classList.add("error");
-    
-    setTimeout(() => {
-      errorSpan.style.display = "none";
-      input.classList.remove("error");
-    }, 3000);
+    setTimeout(() => { errorSpan.style.display = "none"; input.classList.remove("error"); }, 3000);
   }
 }
 
-// Tlačidlo pre zmenu hesla
 const submitResetBtn = document.getElementById("submitBtn");
 if (submitResetBtn && document.getElementById("newPass")) {
   submitResetBtn.onclick = async function() {
@@ -470,32 +389,20 @@ if (submitResetBtn && document.getElementById("newPass")) {
     const token = urlParams.get("token");
     const newPassword = document.getElementById("newPass").value;
     const input = document.getElementById("newPass");
-    
     input.classList.remove("error");
     const errorSpan = document.getElementById("passwordError");
     if (errorSpan) errorSpan.style.display = "none";
-    
-    if (!newPassword) {
-      showErrorReset("Zadajte nové heslo");
-      return;
-    }
-    if (newPassword.length < 8) {
-      showErrorReset("Heslo musí obsahovať aspoň 8 znakov");
-      return;
-    }
-    
+    if (!newPassword) { showErrorReset("Zadajte nové heslo"); return; }
+    if (newPassword.length < 8) { showErrorReset("Heslo musí obsahovať aspoň 8 znakov"); return; }
     submitResetBtn.disabled = true;
     submitResetBtn.textContent = "Prebieha zmena...";
-    
     try {
       const res = await fetch(`${API}/api/set-new-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, newPassword })
       });
-      
       const data = await res.json();
-      
       if (data.success) {
         alert(data.message);
         window.location.href = "/";
@@ -504,7 +411,6 @@ if (submitResetBtn && document.getElementById("newPass")) {
         submitResetBtn.disabled = false;
         submitResetBtn.textContent = "Zmeniť heslo";
       }
-      
     } catch (error) {
       showErrorReset("Nastala chyba. Skúste to prosím znova.");
       submitResetBtn.disabled = false;
@@ -513,7 +419,6 @@ if (submitResetBtn && document.getElementById("newPass")) {
   };
 }
 
-// Enter key support pre reset hesla
 const newPassInput = document.getElementById("newPass");
 if (newPassInput) {
   newPassInput.addEventListener("keypress", function(event) {
