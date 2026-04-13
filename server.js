@@ -14,7 +14,6 @@ app.use(express.static("public"));
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// MySQL connection pool
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -174,6 +173,24 @@ app.get("/api/my-data", (req, res) => {
   });
 });
 
+// Zistenie či má používateľ priradené zariadenie
+app.get("/api/my-devices", (req, res) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ success: false, message: "No token" });
+
+  let decoded;
+  try {
+    decoded = jwt.verify(token, JWT_SECRET);
+  } catch {
+    return res.status(401).json({ success: false, message: "Invalid token" });
+  }
+
+  db.query("SELECT device_uid FROM devices WHERE user_id = ?", [decoded.id], (err, results) => {
+    if (err) return res.status(500).json({ success: false, message: "DB error" });
+    res.json({ hasDevice: results.length > 0, devices: results });
+  });
+});
+
 // Priradenie zariadenia k účtu
 app.post("/api/assign-device", (req, res) => {
   const { device_uid } = req.body;
@@ -191,12 +208,10 @@ app.post("/api/assign-device", (req, res) => {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
 
-  // Skontroluj či zariadenie existuje v databáze
   db.query("SELECT * FROM devices WHERE device_uid = ?", [device_uid.trim()], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB error" });
 
     if (results.length === 0) {
-      // Zariadenie neexistuje – vytvor nový záznam a prirad ho
       db.query(
         "INSERT INTO devices (device_uid, user_id) VALUES (?, ?)",
         [device_uid.trim(), decoded.id],
@@ -206,10 +221,8 @@ app.post("/api/assign-device", (req, res) => {
         }
       );
     } else if (results[0].user_id && results[0].user_id !== decoded.id) {
-      // Zariadenie patrí inému používateľovi
       return res.status(400).json({ success: false, message: "Toto zariadenie je už priradené inému účtu" });
     } else {
-      // Zariadenie existuje, prirad ho k tomuto používateľovi
       db.query(
         "UPDATE devices SET user_id = ? WHERE device_uid = ?",
         [decoded.id, device_uid.trim()],
